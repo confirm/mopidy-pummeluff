@@ -99,7 +99,7 @@ Now prepare our Mopidy environment:
 
 ```
 groupadd -g 666 mopidy
-useradd -u 666 -g 666 -c "Mopidy User" -d /opt/mopidy -m -s /bin/bash mopidy
+useradd -u 666 -g 666 -G audio -c "Mopidy User" -d /opt/mopidy -m -s /bin/bash mopidy
 ```
 
 Let's create our python venv and install mopidy:

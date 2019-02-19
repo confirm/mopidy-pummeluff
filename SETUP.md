@@ -141,3 +141,11 @@ If you want a web interface to control Mopidy, I'd recommend [Iris](https://gith
 ```
 sudo -u mopidy /opt/mopidy/mopidy/bin/pip install mopidy-iris
 ```
+
+After installing Iris, you might want to set the following settings:
+
+```
+[iris]
+country = CH
+locale = de_CH
+```

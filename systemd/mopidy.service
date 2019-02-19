@@ -1,0 +1,11 @@
+[Unit]
+Description=Mopidy
+After=network-online.target
+
+[Service]
+Type=simple
+User=mopidy
+ExecStart=/opt/mopidy/mopidy/bin/mopidy --conf /etc/mopidy/mopidy.conf
+
+[Install]
+WantedBy=multi-user.target

@@ -100,6 +100,11 @@ To install [Mopidy](https://www.mopidy.com/), you can execute the following step
 First of all, install all requirements for Mopidy:
 
 ```
+# Add GPG key and apt source for mopidy apt repo (required for some extensions).
+wget -q -O - https://apt.mopidy.com/mopidy.gpg | sudo apt-key add -
+wget -q -O /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/stretch.list
+apt update
+
 # Install python pip and development requirements, required by Mopidy and extensions.
 apt install build-essential python-dev python-pip
 
@@ -127,8 +132,87 @@ Let's create our python venv and install mopidy:
 ```
 su - mopidy
 
-virtualenv mopidy
+virtualenv --system-site-packages mopidy
 source mopidy/bin/activate
 
 pip install mopidy
+```
+
+Spotify Extension
+-----------------
+
+If you want to use Spotify within Mopidy, install the [Mopidy Spotify Extension](https://github.com/mopidy/mopidy-spotify):
+
+```
+# IMPORTANT: The following command requires the mopidy apt repo from above.
+apt install libffi-dev libspotify-dev libspotify12 
+sudo -u mopidy /opt/mopidy/mopidy/bin/pip install pyspotify mopidy-spotify
+```
+
+After installing spotify, you must authenticate it as described in the [official github repo](https://github.com/mopidy/mopidy-spotify#configuration) and/or on the [mopidy website](https://www.mopidy.com/authenticate/#spotify). The configuration looks like this:
+
+```
+[spotify]
+username = … your username …
+password = … your secret …
+client_id = … client_id value you got from mopidy.com …
+client_secret = … client_secret value you got from mopidy.com …
+```
+
+Iris Extension
+--------------
+
+If you want a web interface to control Mopidy, I'd recommend [Iris](https://github.com/jaedb/Iris):
+
+```
+sudo -u mopidy /opt/mopidy/mopidy/bin/pip install mopidy-iris
+```
+
+Configuration
+=============
+
+The configuration of Mopidy can be stored wherever you want. However, I'd recommend to store it in `/etc/mopidy/mopidy.conf`. If you want to use that, create the directory with the correct permissions:
+
+```
+mkdir /etc/mopidy
+chown mopidy: /etc/mopidy
+```
+
+When you run Mopidy the first time, an initial configuration will be created.
+
+You might want to set the following configuration parameters:
+
+- `http.hostname = 0.0.0.0` to bind HTTP listener to all interfaces
+- `mpd.hostname = 0.0.0.0` to bind MPD listener to all interfaces
+
+Run Mopidy
+==========
+
+Run Mopidy via CLI
+------------------
+
+You can run Mopidy from the CLI by executing:
+
+```
+su - mopidy
+source mopidy/bin/activate
+mopidy --config /etc/mopidy/mopidy.conf
+```
+
+Run Mopidy as service
+---------------------
+
+To run Mopidy as service, copy the [mopidy systemd service unit](systemd/mopidy.service) to `/etc/systemd/system/mopidy.service` and run the following commands:
+
+```
+systemctl daemon-reload
+systemctl enable mopidy
+```
+
+From now on you can easily `start`, `stop` or `restart` Mopidy:
+
+```
+systemctl start mopidy
+systemctl stop mopidy
+systemctl restart mopidy
 ```

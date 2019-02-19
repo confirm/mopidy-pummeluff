@@ -83,7 +83,8 @@ apt update
 apt install build-essential python-dev python-pip
 
 # Install GStreamer, required by Mopidy itself.
-apt install python-gst-1.0 \
+apt install gstreamer1.0-alsa \
+    python-gst-1.0 \
     gir1.2-gstreamer-1.0 \
     gir1.2-gst-plugins-base-1.0 \
     gstreamer1.0-plugins-good \

@@ -54,7 +54,7 @@ class CardRequestHandler(RequestHandler):
         card.
         '''
         last_scan = CardRequestHandler.last_scan
-        LOGGER.debug('Returning last scanned card with UID %s', last_scan['uid'])
+        LOGGER.debug('Returning last scanned card with UID %s', last_scan.get('uid'))
         self.write_response(data=last_scan)
 
     def post(self):

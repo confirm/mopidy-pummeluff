@@ -10,6 +10,7 @@ from sys import exit
 from signal import signal, SIGINT, SIGTERM
 from time import time
 from logging import getLogger
+from urllib import urlopen
 
 from RPi.GPIO import cleanup
 
@@ -90,7 +91,9 @@ if __name__ == '__main__':
             uid = reader.uid
 
             if now - prev_time > 1 or uid != prev_uid:
-                print(uid)
+                LOGGER.debug('Sending UID to Pummeluff HTTP API')
+                response = urlopen(url='http://localhost:6880/pummeluff/card/', data=uid).read()
+                LOGGER.info('UID sent to Pummeluff HTTP API')
 
             prev_uid  = uid
             prev_time = now

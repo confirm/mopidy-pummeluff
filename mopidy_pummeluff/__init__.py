@@ -9,6 +9,7 @@ import os
 
 from mopidy import config, ext
 
+from .frontend import PummeluffFrontend
 from .web import CardRequestHandler
 
 
@@ -44,6 +45,8 @@ class Extension(ext.Extension):
         '''
         Setup the extension.
         '''
+        registry.add('frontend', PummeluffFrontend)
+
         registry.add('http:app', {
             'name': self.ext_name,
             'factory': app_factory,

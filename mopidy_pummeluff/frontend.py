@@ -57,13 +57,13 @@ class CardReader(Thread):
         reader.cleanup()
 
 
-class Frontend(pykka.ThreadingActor, core.CoreListener):
+class PummeluffFrontend(pykka.ThreadingActor, core.CoreListener):
     '''
     Pummeluff frontend which basically reads cards from the RFID reader.
     '''
 
     def __init__(self, config, core):
-        super(Frontend, self).__init__()
+        super(PummeluffFrontend, self).__init__()
         self.core        = core
         self.stop_event  = Event()
         self.card_reader = CardReader(self.stop_event)

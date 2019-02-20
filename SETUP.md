@@ -99,7 +99,7 @@ Now prepare our Mopidy environment:
 
 ```
 groupadd -g 666 mopidy
-useradd -u 666 -g 666 -G audio -c "Mopidy User" -d /opt/mopidy -m -s /bin/bash mopidy
+useradd -u 666 -g 666 -G audio,spi,gpio -c "Mopidy User" -d /opt/mopidy -m -s /bin/bash mopidy
 ```
 
 Let's create our python venv and install mopidy:
@@ -149,4 +149,20 @@ After installing Iris, you might want to set the following settings:
 [iris]
 country = CH
 locale = de_CH
+```
+
+Pummeluff Extension
+-------------------
+
+The Pummeluff extension is in charge of the whole RFID handling. The sources for it reside in this repository, but we need to make sure we've all dependencies in place. Follow these steps to install it:
+
+```
+su - mopidy
+
+source mopidy/bin/activate
+
+pip install spidev      # Install this before pi-rc522
+pip install pi-rc522
+
+
 ```

@@ -14,7 +14,8 @@ from json import dumps
 from logging import getLogger
 
 from tornado.web import RequestHandler
-from cards import Card
+
+from .cards import Card
 
 
 LOGGER = getLogger(__name__)

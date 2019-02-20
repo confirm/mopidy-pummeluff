@@ -9,7 +9,7 @@ import os
 
 from mopidy import config, ext
 
-from web import CardRequestHandler
+from .web import CardRequestHandler
 
 
 def app_factory(config, core):

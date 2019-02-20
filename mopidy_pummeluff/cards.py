@@ -11,7 +11,7 @@ __all__ = (
 
 from logging import getLogger
 
-from registry import REGISTRY
+from .registry import REGISTRY
 
 
 LOGGER = getLogger(__name__)

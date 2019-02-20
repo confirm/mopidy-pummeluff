@@ -52,7 +52,7 @@ class CardReader(Thread):
                 uid = reader.uid
 
                 if now - prev_time > 1 or uid != prev_uid:
-                    LOGGER.info('Card with UID %s read', uid)
+                    LOGGER.info('Card %s read', uid)
                     self.handle_uid(uid)
 
                 prev_time = now
@@ -72,10 +72,10 @@ class CardReader(Thread):
         card = Card(uid)
 
         if card.registered:
-            LOGGER.info('Card is registered, triggering action')
+            LOGGER.info('Triggering action of registered card')
             card.action(mopidy_core=self.core)
         else:
-            LOGGER.info('Card is not registered, doing nothing')
+            LOGGER.info('Card is not registered, thus doing nothing')
 
         CardReader.latest = {
             'time': time(),

@@ -104,7 +104,7 @@ class Card(object):
         if card_type is None:
             card_type = cls.get_type(cls)
 
-        LOGGER.info('Registering %s card with UID "%s" and parameter "%s"', card_type, uid, parameter)
+        LOGGER.info('Registering %s card %s with parameter "%s"', card_type, uid, parameter)
 
         if cls.get_class(card_type) == Card:
             error = 'Registering cards without explicit types are not allowed. ' \
@@ -131,7 +131,7 @@ class TrackCard(Card):
 
         :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
-        LOGGER.debug('Replacing tracklist with URI "%s"', self.parameter)
+        LOGGER.info('Replacing tracklist with URI "%s"', self.parameter)
         mopidy_core.tracklist.clear()
         mopidy_core.tracklist.add(uri=self.parameter)
         mopidy_core.playback.play()
@@ -148,5 +148,5 @@ class VolumeCard(Card):
 
         :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
-        LOGGER.debug('Setting volume to %s', self.parameter)
+        LOGGER.info('Setting volume to %s', self.parameter)
         mopidy_core.mixer.set_volume(int(self.parameter))

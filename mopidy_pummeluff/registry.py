@@ -24,7 +24,7 @@ class RegistryDict(dict):
     which reads and writes the registry from/to disk.
     '''
 
-    registry_path = '/tmp/registry.json'
+    registry_path = '/etc/mopidy/pummeluff_cards.json'
 
     def __init__(self):
         if os.path.exists(self.registry_path):

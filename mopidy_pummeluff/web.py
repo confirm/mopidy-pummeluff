@@ -79,7 +79,7 @@ class CardRequestHandler(RequestHandler):
             CardRequestHandler.last_scan = {
                 'time': time(),
                 'uid': card.uid,
-                'instance': card
+                'card': str(card)
             }
 
             self.write_response(data=CardRequestHandler.last_scan)

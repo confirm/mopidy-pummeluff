@@ -10,12 +10,12 @@ import os
 from mopidy import config, ext
 
 from .frontend import PummeluffFrontend
-from .web import CardRequestHandler
+from .web import LatestScanHandler
 
 
 def app_factory(config, core):
     return [
-        ('/card/', CardRequestHandler, {'core': core})
+        ('/latest/', LatestScanHandler, {'core': core})
     ]
 
 

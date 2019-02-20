@@ -13,21 +13,27 @@ import pykka
 from mopidy import core
 
 from .rfid_reader import RFIDReader, ReadError
+from .cards import Card
 
 LOGGER = getLogger(__name__)
+
+LAST_UID = ''
 
 
 class CardReader(Thread):
     '''
     Thread class which reads RFID cards from the RFID reader.
     '''
-    def __init__(self, stop_event):
+    latest = {}
+
+    def __init__(self, core, stop_event):
         '''
         Class constructor.
 
         :param threading.Event stop_event: The stop event
         '''
         super(CardReader, self).__init__()
+        self.core       = core
         self.stop_event = stop_event
 
     def run(self):
@@ -47,14 +53,35 @@ class CardReader(Thread):
 
                 if now - prev_time > 1 or uid != prev_uid:
                     LOGGER.info('Card with UID %s read', uid)
+                    self.handle_uid(uid)
 
-                prev_uid  = uid
                 prev_time = now
+                prev_uid  = uid
 
             except ReadError:
                 pass
 
         reader.cleanup()
+
+    def handle_uid(self, uid):
+        '''
+        Handle the scanned card / retreived UID.
+
+        :param str uid: The UID
+        '''
+        card = Card(uid)
+
+        if card.registered:
+            LOGGER.info('Card is registered, triggering action')
+            card.action(mopidy_core=self.core)
+        else:
+            LOGGER.info('Card is not registered, doing nothing')
+
+        CardReader.latest = {
+            'time': time(),
+            'uid': card.uid,
+            'card': str(card)
+        }
 
 
 class PummeluffFrontend(pykka.ThreadingActor, core.CoreListener):
@@ -66,7 +93,7 @@ class PummeluffFrontend(pykka.ThreadingActor, core.CoreListener):
         super(PummeluffFrontend, self).__init__()
         self.core        = core
         self.stop_event  = Event()
-        self.card_reader = CardReader(self.stop_event)
+        self.card_reader = CardReader(core=core, stop_event=self.stop_event)
 
     def on_start(self):
         '''

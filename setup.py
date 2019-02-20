@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='Mopidy-Pummeluff',
-    version='1.0.0',
+    use_scm_version=True,
     url='https://git.confirm.ch/dbarton/pummeluff.git',
     license='MIT',
     author='dbarton',
@@ -18,6 +18,9 @@ setup(
     packages=find_packages(exclude=['tests', 'tests.*']),
     zip_safe=False,
     include_package_data=True,
+    setup_requires=[
+        'setuptools_scm',
+    ],
     install_requires=[
         'setuptools',
         'Mopidy >= 2.2.2',

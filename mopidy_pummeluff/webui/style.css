@@ -1,0 +1,161 @@
+/*
+ * Main Elements
+ */
+
+*,
+*:before,
+*:after
+{
+    box-sizing: border-box;
+}
+
+html,
+body
+{
+    margin : 0;
+    padding: 0;
+}
+
+body
+{
+    min-height      : 100vh;
+    font-family     : sans-serif;
+    font-size       : 14px;
+    color           : #eee;
+    background-color: #222;
+}
+
+/*
+ * Headings
+ */
+
+h1,
+h2
+{
+    margin: 0 0 10px 0;
+}
+
+/*
+ * Structural page elements
+ */
+
+main
+{
+    display: flex;
+}
+
+header
+{
+    padding: 20px 20px 10px 20px;
+}
+
+main > div
+{
+    padding: 20px;
+}
+
+/*
+ * Register Form
+ */
+
+form
+{
+    background-color: #333;
+    padding         : 20px;
+    width           : 250px;
+}
+
+label
+{
+    display: block;
+    margin : 10px 0 5px 0;
+}
+
+label:first-child
+{
+    margin-top: 0;
+}
+
+input,
+select,
+button
+{
+    width           : 100%;
+    border          : 0;
+    padding         : 10px;
+    border-width    : 0 0 2px 0;
+    border-style    : solid;
+    border-color    : #333;
+    background-color: #222;
+    color           : #eee;
+    outline         : none;
+}
+
+select
+{
+    height: 35px;
+}
+
+input::placeholder
+{
+    color: #666;
+}
+
+input:focus
+{
+    border-bottom-color: #fa0;
+}
+
+button
+{
+    background-color: #4a4;
+    color           : #eee;
+    font-weight     : bold;
+    margin-top      : 10px;
+}
+
+a#read-rfid-card
+{
+    text-decoration: none;
+    color: #fa0;
+    font-size: 11px;
+}
+
+/*
+ * Registered Cards
+ */
+
+div.card
+{
+    display         : inline-block;
+    background-color: #eee;
+    color           : #222;
+    box-shadow      : 1px 1px 5px #000;
+    padding         : 10px;
+    margin          : 0 20px 20px 0;
+    width           : 400px;
+    line-height     : 20px;
+}
+div.card span.uid,
+div.card span.type,
+div.card span.parameter
+{
+    font-family: Courier New, monospace;
+}
+
+div.card span.type
+{
+    display         : inline-block;
+    background-color: #888;
+    color           : #eee;
+    font-size       : 11px;
+    line-height     : 11px;
+    padding         : 2px 4px;
+    border-radius   : 10px;
+}
+
+div.card span.alias,
+div.card span.parameter
+{
+    display: block;
+}

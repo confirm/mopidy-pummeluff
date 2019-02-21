@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="style.css" rel="stylesheet" type="text/css">
+        <title>Pummeluff Card Management</title>
+    </head>
+    <body>
+        <header>
+            <h1>Pummeluff Card Management</h1>
+        </header>
+        <main>
+            <div id="register">
+                <h2>Register New Card</h2>
+                <div>
+                    <form>
+                        <label for="uid">UID</label>
+                        <input id="uid" type="text" placeholder="The unique card ID">
+                        <a id="read-rfid-card" href="#">Read UID from RFID card…</a>
+                        <label for="alias">Alias</label>
+                        <input id="alias" type="text" placeholder="Your personal alias / identifier">
+                        <label for="type">Type</label>
+                        <select>
+                        </select>
+                        <label for="parameter">Parameter</label>
+                        <input id="parameter" type="text" placeholder="A type-specific parameter">
+                        <button role="submit">✓ Register Card</button>
+                    </form>
+                </div>
+            </div>
+            <div id="registered">
+                <h2>Registered Cards</h2>
+                <div id="cards"></div>
+            </div>
+        </main>
+    </body>
+
+</html>

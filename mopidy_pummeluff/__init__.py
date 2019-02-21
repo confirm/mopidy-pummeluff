@@ -49,6 +49,11 @@ class Extension(ext.Extension):
         '''
         registry.add('frontend', PummeluffFrontend)
 
+        registry.add('http:static', {
+            'name': self.ext_name,
+            'path': os.path.join(os.path.dirname(__file__), 'webui'),
+        })
+
         registry.add('http:app', {
             'name': self.ext_name,
             'factory': app_factory,

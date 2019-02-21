@@ -7,6 +7,8 @@ from __future__ import absolute_import, unicode_literals, print_function
 
 __all__ = (
     'Card',
+    'TracklistCard',
+    'VolumeCard',
 )
 
 from logging import getLogger
@@ -124,7 +126,7 @@ class Card(object):
         return Card.all().get(uid)
 
 
-class TrackCard(Card):
+class TracklistCard(Card):
     '''
     Card which is replacing the tracklist with the URI defined in the card's
     argument.
@@ -153,5 +155,5 @@ class VolumeCard(Card):
 
         :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
-        LOGGER.info('Setting volume to %s', self.parameter)
+        LOGGER.info('Setting volume to %s%', self.parameter)
         mopidy_core.mixer.set_volume(int(self.parameter))

@@ -75,6 +75,8 @@ class Card(object):
         except (KeyError, AssertionError):
             raise InvalidCardType('Card class for type "{}" does\'t exist.'.format(card_type))
 
+        return cls
+
     @classmethod
     def get_type(cls, card_class=None):
         '''

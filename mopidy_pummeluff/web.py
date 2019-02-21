@@ -79,7 +79,7 @@ class RegistryHandler(RequestHandler):
         '''
         cards = []
 
-        for uid, card in cards.Card.all().items():
+        for uid, card in Card.all().items():
             cards.append(card.dict)
 
         data = {

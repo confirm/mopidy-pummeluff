@@ -128,8 +128,8 @@ class Card(object):
 
 class TracklistCard(Card):
     '''
-    Card which is replacing the tracklist with the URI defined in the card's
-    argument.
+    Replaces the current tracklist with the URI retreived from the card's
+    parameter.
     '''
 
     def action(self, mopidy_core):
@@ -146,7 +146,7 @@ class TracklistCard(Card):
 
 class VolumeCard(Card):
     '''
-    Card which is setting the volume to the value of the card's argument.
+    Sets the volume to the percentage value retreived from the card's parameter.
     '''
 
     def action(self, mopidy_core):
@@ -157,3 +157,35 @@ class VolumeCard(Card):
         '''
         LOGGER.info('Setting volume to %s%', self.parameter)
         mopidy_core.mixer.set_volume(int(self.parameter))
+
+
+class StopCard(Card):
+    '''
+    Stops the playback.
+    '''
+
+    def action(self, mopidy_core):
+        '''
+        Stop playback.
+        '''
+        LOGGER.info('Stopping playback')
+        mopidy_core.playback.stop()
+
+
+class PauseCard(Card):
+    '''
+    Pauses or resumes the playback, based on the current state.
+    '''
+
+    def action(self, mopidy_core):
+        '''
+        Pause or resume the playback.
+        '''
+        playback = mopidy_core.playback
+
+        if playback.get_state() == 'playing':
+            LOGGER.info('Pausing the playback')
+            playback.pause()
+        else:
+            LOGGER.info('Resuming the playback')
+            playback.resume()

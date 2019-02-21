@@ -43,6 +43,7 @@ class Card(object):
             instance = super(Card, cls).__new__(cls, uid=uid)
 
         instance.registered = bool(card)
+        instance.alias      = card.get('alias')
         instance.parameter  = card.get('parameter')
 
         return instance
@@ -51,7 +52,9 @@ class Card(object):
         self.uid = uid
 
     def __str__(self):
-        return '<{0.__class__.__name__}: {0.uid} {0.parameter}>'.format(self)
+        cls_name   = self.__class__.__name__
+        identifier = self.alias or self.uid
+        return '<{}: {}>'.format(cls_name, identifier)
 
     @staticmethod
     def get_class(card_type):
@@ -92,11 +95,12 @@ class Card(object):
         return {uid: Card(uid=uid) for uid in REGISTRY}
 
     @classmethod
-    def register(cls, uid, parameter=None, card_type=None):
+    def register(cls, uid, alias=None, parameter=None, card_type=None):
         '''
         Register card in the registry.
 
         :param str uid: The card's UID
+        :param str alias: The card's alias
         :param str parameter: The optional parameter
         :param str card_type: The card type
         '''
@@ -113,6 +117,7 @@ class Card(object):
 
         REGISTRY[uid] = {
             'type': card_type,
+            'alias': alias,
             'parameter': parameter
         }
 

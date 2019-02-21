@@ -70,6 +70,7 @@ class RegisterHandler(RequestHandler):
         '''
         card = Card.register(
             uid=self.get_argument('uid'),
+            alias=self.get_argument('alias', None),
             parameter=self.get_argument('parameter'),
             card_type=self.get_argument('type')
         )

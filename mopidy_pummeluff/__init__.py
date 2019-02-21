@@ -10,7 +10,7 @@ import os
 from mopidy import config, ext
 
 from .frontend import PummeluffFrontend
-from .web import LatestHandler, RegistryHandler, RegisterHandler
+from .web import LatestHandler, RegistryHandler, RegisterHandler, TypesHandler
 
 
 def app_factory(config, core):
@@ -18,6 +18,7 @@ def app_factory(config, core):
         ('/latest/', LatestHandler, {'core': core}),
         ('/registry/', RegistryHandler, {'core': core}),
         ('/register/', RegisterHandler, {'core': core}),
+        ('/types/', TypesHandler, {'core': core}),
     ]
 
 

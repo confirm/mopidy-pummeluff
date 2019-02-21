@@ -17,7 +17,7 @@ from logging import getLogger
 from tornado.web import RequestHandler
 
 from .frontend import CardReader
-from .cards import Card
+from .cards import *
 
 LOGGER = getLogger(__name__)
 
@@ -26,7 +26,6 @@ class LatestHandler(RequestHandler):
     '''
     Request handler which returns the latest scanned card.
     '''
-    last_scan = {}
 
     def initialize(self, core):
         '''
@@ -65,7 +64,6 @@ class RegistryHandler(RequestHandler):
     '''
     Request handler which returns all registered cards.
     '''
-    last_scan = {}
 
     def initialize(self, core):
         '''
@@ -81,7 +79,7 @@ class RegistryHandler(RequestHandler):
         '''
         cards = []
 
-        for uid, card in Card.all().items():
+        for uid, card in cards.Card.all().items():
             cards.append(card.dict)
 
         data = {
@@ -98,7 +96,6 @@ class RegisterHandler(RequestHandler):
     '''
     Request handler which registers an RFID card in the registry.
     '''
-    last_scan = {}
 
     def initialize(self, core):
         '''
@@ -134,3 +131,41 @@ class RegisterHandler(RequestHandler):
         Handle PUT request.
         '''
         self.post()
+
+
+class TypesHandler(RequestHandler):
+    '''
+    Request handler which returns all card types.
+    '''
+
+    def initialize(self, core):
+        '''
+        Initialize request handler with Mopidy core.
+
+        :param mopidy.core.Core mopidy_core: The mopidy core instance
+        '''
+        self.core = core
+
+    def get(self):
+        '''
+        Handle GET request.
+        '''
+        from .cards import __all__ as card_classes
+
+        types = {}
+
+        for cls_name in card_classes:
+            card_cls = globals()[cls_name]
+            if card_cls is not Card:
+                card_type        = Card.get_type(card_cls)
+                card_doc         = card_cls.__doc__.strip().split('\n')[0]
+                types[card_type] = card_doc
+
+        data = {
+            'success': True,
+            'message': 'Types successfully retreived',
+            'types': types
+        }
+
+        self.set_header('Content-type', 'application/json')
+        self.write(dumps(data))

@@ -125,6 +125,26 @@ class Card(object):
 
         return Card.all().get(uid)
 
+    @property
+    def dict(self):
+        '''
+        Return the dict version of this card.
+
+        :return: The dict version of this card
+        :rtype: dict
+        '''
+        d = {
+            'uid': self.uid,
+            'alias': self.alias,
+            'type': self.get_type(),
+            'parameter': self.parameter,
+        }
+
+        if hasattr(self, 'scanned'):
+            d['scanned'] = self.scanned
+
+        return d
+
 
 class TracklistCard(Card):
     '''

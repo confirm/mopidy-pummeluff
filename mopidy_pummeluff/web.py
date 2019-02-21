@@ -7,6 +7,7 @@ from __future__ import absolute_import, unicode_literals
 
 __all__ = (
     'LatestHandler',
+    'RegistryHandler',
     'RegisterHandler',
 )
 
@@ -52,12 +53,42 @@ class LatestHandler(RequestHandler):
             data = {
                 'success': True,
                 'message': 'Scanned card found',
-                'scanned': card.scanned,
-                'uid': card.uid,
-                'alias': card.alias,
-                'type': card.get_type(),
-                'parameter': card.parameter,
             }
+
+            data.update(card.dict)
+
+        self.set_header('Content-type', 'application/json')
+        self.write(dumps(data))
+
+
+class RegistryHandler(RequestHandler):
+    '''
+    Request handler which returns all registered cards.
+    '''
+    last_scan = {}
+
+    def initialize(self, core):
+        '''
+        Initialize request handler with Mopidy core.
+
+        :param mopidy.core.Core mopidy_core: The mopidy core instance
+        '''
+        self.core = core
+
+    def get(self):
+        '''
+        Handle GET request.
+        '''
+        cards = []
+
+        for uid, card in Card.all().items():
+            cards.append(card.dict)
+
+        data = {
+            'success': True,
+            'message': 'Registry successfully read',
+            'cards': cards
+        }
 
         self.set_header('Content-type', 'application/json')
         self.write(dumps(data))
@@ -88,12 +119,15 @@ class RegisterHandler(RequestHandler):
             card_type=self.get_argument('type')
         )
 
-        self.set_header('Content-type', 'application/json')
-        self.write({
+        data = {
             'success': True,
             'message': 'Card successfully registered',
-            'card': str(card)
-        })
+        }
+
+        data.update(card.dict)
+
+        self.set_header('Content-type', 'application/json')
+        self.write(dumps(data))
 
     def put(self):
         '''

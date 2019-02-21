@@ -70,8 +70,9 @@ class Card(object):
         '''
         try:
             name = card_type.title() + 'Card'
-            return globals()[name]
-        except KeyError:
+            cls  = globals()[name]
+            assert issubclass(cls, Card)
+        except (KeyError, AssertionError):
             raise InvalidCardType('Card class for type "{}" does\'t exist.'.format(card_type))
 
     @classmethod

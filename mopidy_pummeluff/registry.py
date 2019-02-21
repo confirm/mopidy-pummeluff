@@ -73,7 +73,7 @@ class RegistryDict(dict):
         LOGGER.debug('Writing registry to %s', self.registry_path)
 
         with open(self.registry_path, 'w') as f:
-            json.dump(self, f)
+            json.dump(self, f, indent=4)
 
 
 REGISTRY = RegistryDict()

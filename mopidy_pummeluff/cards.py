@@ -72,8 +72,8 @@ class Card(object):
         except KeyError:
             raise InvalidCardType('Card class for type "{}" does\'t exist.'.format(card_type))
 
-    @staticmethod
-    def get_type(card_class):
+    @classmethod
+    def get_type(cls, card_class=None):
         '''
         Return the type for a specific card class.
 
@@ -82,7 +82,7 @@ class Card(object):
         :return: The card type
         :rtype: str
         '''
-        return card_class.__name__[0:-4].lower()
+        return (card_class or cls).__name__[0:-4].lower()
 
     @classmethod
     def all(cls):

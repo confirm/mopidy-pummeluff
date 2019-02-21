@@ -24,7 +24,7 @@ class CardReader(Thread):
     '''
     Thread class which reads RFID cards from the RFID reader.
     '''
-    latest = {}
+    latest = None
 
     def __init__(self, core, stop_event):
         '''
@@ -77,11 +77,8 @@ class CardReader(Thread):
         else:
             LOGGER.info('Card is not registered, thus doing nothing')
 
-        CardReader.latest = {
-            'time': time(),
-            'uid': card.uid,
-            'card': str(card)
-        }
+        card.scanned      = time()
+        CardReader.latest = card
 
 
 class PummeluffFrontend(pykka.ThreadingActor, core.CoreListener):

@@ -39,12 +39,25 @@ class LatestHandler(RequestHandler):
         '''
         Handle GET request.
         '''
-        latest = CardReader.latest
+        card = CardReader.latest
 
-        LOGGER.debug('Returning latest card with UID %s', latest.get('uid'))
+        LOGGER.debug('Returning latest card %s', card)
 
-        data = {'success': True}
-        data.update(latest)
+        if card is None:
+            data = {
+                'success': False,
+                'message': 'No card scanned yet'
+            }
+        else:
+            data = {
+                'success': True,
+                'message': 'Scanned card found',
+                'scanned': card.scanned,
+                'uid': card.uid,
+                'alias': card.alias,
+                'type': card.get_type(),
+                'parameter': card.parameter,
+            }
 
         self.set_header('Content-type', 'application/json')
         self.write(dumps(data))
@@ -78,6 +91,7 @@ class RegisterHandler(RequestHandler):
         self.set_header('Content-type', 'application/json')
         self.write({
             'success': True,
+            'message': 'Card successfully registered',
             'card': str(card)
         })
 

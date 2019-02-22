@@ -93,9 +93,17 @@ class API {
         let callback = function(response)
         {
             if(response.success)
+            {
                 api.refreshRegistry()
+                document.getElementById('uid').value        = ''
+                document.getElementById('alias').value      = ''
+                document.getElementById('parameter').value  = ''
+                document.getElementById('type').selectIndex = 0
+            }
             else
+            {
                 window.alert(response.message)
+            }
         }
 
         this.request('/pummeluff/register/', data, callback)

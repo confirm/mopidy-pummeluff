@@ -127,7 +127,8 @@ class Card(object):
 
         if real_cls == Card:
             error = 'Registering cards without explicit types are not allowed. ' \
-                'Set card_type argument on Card.register() or use register() method of explicit card classes.'
+                'Set card_type argument on Card.register() ' \
+                'or use register() method of explicit card classes.'
             raise InvalidCardType(error)
 
         if hasattr(real_cls, 'validate_parameter'):
@@ -149,7 +150,7 @@ class Card(object):
         :return: The dict version of this card
         :rtype: dict
         '''
-        d = {
+        card_dict = {
             'uid': self.uid,
             'alias': self.alias,
             'type': self.get_type(),
@@ -157,9 +158,9 @@ class Card(object):
         }
 
         if hasattr(self, 'scanned'):
-            d['scanned'] = self.scanned
+            card_dict['scanned'] = self.scanned
 
-        return d
+        return card_dict
 
 
 class TracklistCard(Card):
@@ -218,7 +219,7 @@ class StopCard(Card):
     Stops the playback.
     '''
 
-    def action(self, mopidy_core):
+    def action(self, mopidy_core):  # pylint: disable=no-self-use
         '''
         Stop playback.
         '''
@@ -231,7 +232,7 @@ class PauseCard(Card):
     Pauses or resumes the playback, based on the current state.
     '''
 
-    def action(self, mopidy_core):
+    def action(self, mopidy_core):  # pylint: disable=no-self-use
         '''
         Pause or resume the playback.
         '''

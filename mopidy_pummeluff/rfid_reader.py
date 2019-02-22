@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf8 -*-
 '''
 Python card reader module.
@@ -22,6 +21,13 @@ class RFIDReader(RFID):
     :py:class:`pirc522.RFID` class.
     '''
 
+    @staticmethod
+    def cleanup():
+        '''
+        Cleanup GPIO ports.
+        '''
+        cleanup()
+
     @property
     def uid(self):
         '''
@@ -30,7 +36,7 @@ class RFIDReader(RFID):
         :return: The hex UID
         :rtype: string
         '''
-        error, data = self.request()
+        error, data = self.request()  # pylint: disable=unused-variable
         if error:
             raise ReadError('Could not read tag')
 
@@ -40,9 +46,3 @@ class RFIDReader(RFID):
 
         uid = '{0[0]:02X}{0[1]:02X}{0[2]:02X}{0[3]:02X}'.format(uid_chunks)
         return uid
-
-    def cleanup(self):
-        '''
-        Cleanup GPIO ports.
-        '''
-        cleanup()

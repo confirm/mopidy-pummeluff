@@ -16,8 +16,8 @@ from logging import getLogger
 
 from tornado.web import RequestHandler
 
+from . import cards
 from .frontend import CardReader
-from .cards import *
 
 LOGGER = getLogger(__name__)
 
@@ -27,7 +27,7 @@ class LatestHandler(RequestHandler):
     Request handler which returns the latest scanned card.
     '''
 
-    def initialize(self, core):
+    def initialize(self, core):  # pylint: disable=arguments-differ
         '''
         Initialize request handler with Mopidy core.
 
@@ -35,7 +35,7 @@ class LatestHandler(RequestHandler):
         '''
         self.core = core
 
-    def get(self):
+    def get(self, *args, **kwargs):
         '''
         Handle GET request.
         '''
@@ -66,7 +66,7 @@ class RegistryHandler(RequestHandler):
     Request handler which returns all registered cards.
     '''
 
-    def initialize(self, core):
+    def initialize(self, core):  # pylint: disable=arguments-differ
         '''
         Initialize request handler with Mopidy core.
 
@@ -74,19 +74,19 @@ class RegistryHandler(RequestHandler):
         '''
         self.core = core
 
-    def get(self):
+    def get(self, *args, **kwargs):
         '''
         Handle GET request.
         '''
-        cards = []
+        cards_list = []
 
-        for uid, card in Card.all().items():
-            cards.append(card.dict)
+        for card in cards.Card.all().values():
+            cards_list.append(card.dict)
 
         data = {
             'success': True,
             'message': 'Registry successfully read',
-            'cards': cards
+            'cards': cards_list
         }
 
         self.set_header('Content-type', 'application/json')
@@ -98,7 +98,7 @@ class RegisterHandler(RequestHandler):
     Request handler which registers an RFID card in the registry.
     '''
 
-    def initialize(self, core):
+    def initialize(self, core):  # pylint: disable=arguments-differ
         '''
         Initialize request handler with Mopidy core.
 
@@ -106,12 +106,12 @@ class RegisterHandler(RequestHandler):
         '''
         self.core = core
 
-    def post(self):
+    def post(self, *args, **kwargs):
         '''
         Handle POST request.
         '''
         try:
-            card = Card.register(
+            card = cards.Card.register(
                 uid=self.get_argument('uid'),
                 alias=self.get_argument('alias', None),
                 parameter=self.get_argument('parameter'),
@@ -135,7 +135,7 @@ class RegisterHandler(RequestHandler):
         self.set_header('Content-type', 'application/json')
         self.write(dumps(data))
 
-    def put(self):
+    def put(self, *args, **kwargs):
         '''
         Handle PUT request.
         '''
@@ -147,7 +147,7 @@ class TypesHandler(RequestHandler):
     Request handler which returns all card types.
     '''
 
-    def initialize(self, core):
+    def initialize(self, core):  # pylint: disable=arguments-differ
         '''
         Initialize request handler with Mopidy core.
 
@@ -155,18 +155,16 @@ class TypesHandler(RequestHandler):
         '''
         self.core = core
 
-    def get(self):
+    def get(self, *args, **kwargs):
         '''
         Handle GET request.
         '''
-        from .cards import __all__ as card_classes
-
         types = {}
 
-        for cls_name in card_classes:
-            card_cls = globals()[cls_name]
-            if card_cls is not Card:
-                card_type        = Card.get_type(card_cls)
+        for cls_name in cards.__all__:
+            card_cls = getattr(cards, cls_name)
+            if card_cls is not cards.Card:
+                card_type        = cards.Card.get_type(card_cls)
                 card_doc         = card_cls.__doc__.strip().split('.')[0]
                 types[card_type] = card_doc
 

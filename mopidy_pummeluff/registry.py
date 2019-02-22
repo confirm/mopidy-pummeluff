@@ -27,6 +27,8 @@ class RegistryDict(dict):
     registry_path = '/etc/mopidy/pummeluff_cards.json'
 
     def __init__(self):
+        super(RegistryDict, self).__init__(self)
+
         if os.path.exists(self.registry_path):
             self.read()
         else:

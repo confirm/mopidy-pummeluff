@@ -10,7 +10,7 @@ from time import time
 from logging import getLogger
 
 import pykka
-from mopidy import core
+from mopidy import core as mopidy_core
 
 from .rfid_reader import RFIDReader, ReadError
 from .cards import Card
@@ -81,12 +81,12 @@ class CardReader(Thread):
         CardReader.latest = card
 
 
-class PummeluffFrontend(pykka.ThreadingActor, core.CoreListener):
+class PummeluffFrontend(pykka.ThreadingActor, mopidy_core.CoreListener):
     '''
     Pummeluff frontend which basically reads cards from the RFID reader.
     '''
 
-    def __init__(self, config, core):
+    def __init__(self, config, core):  # pylint: disable=unused-argument
         super(PummeluffFrontend, self).__init__()
         self.core        = core
         self.stop_event  = Event()

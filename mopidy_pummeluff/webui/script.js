@@ -15,7 +15,11 @@ class API {
             init = { method: 'POST', body: data }
 
         fetch(endpoint, init).then(function(response) {
-            return response.json();
+            let obj = response.json()
+            if(response.status == 200)
+                return obj
+            else
+                window.alert(obj.message)
         }).then(callback)
 
     }

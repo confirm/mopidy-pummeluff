@@ -167,7 +167,7 @@ class TypesHandler(RequestHandler):
             card_cls = globals()[cls_name]
             if card_cls is not Card:
                 card_type        = Card.get_type(card_cls)
-                card_doc         = card_cls.__doc__.strip().split('\n')[0]
+                card_doc         = card_cls.__doc__.strip().split('.')[0]
                 types[card_type] = card_doc
 
         data = {

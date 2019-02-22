@@ -73,7 +73,7 @@ class API {
             {
                 let option = document.createElement('option')
                 option.setAttribute('value', type)
-                option.innerHTML = type + ': ' + response.types[type]
+                option.innerHTML = type + ' (' + response.types[type] + ')'
                 select.appendChild(option)
             }
         }
@@ -107,6 +107,8 @@ class API {
 
     getLatestCard()
     {
+        let latest_card = undefined
+
         let uid_field   = document.getElementById('uid')
         uid_field.value = ''
 
@@ -117,12 +119,8 @@ class API {
         {
             let callback = function(response)
             {
-                if(!latest_card)
-                    latest_card = response
-
-                if(response.success && JSON.stringify(response) != JSON.stringify(latest_card))
+                if(latest_card && response.success && JSON.stringify(response) != JSON.stringify(latest_card))
                 {
-                    latest_card     = response
                     uid_field.value = response.uid
                     link.classList.remove('reading')
                 }
@@ -130,6 +128,8 @@ class API {
                 {
                     setTimeout(() => do_request(), 1000)
                 }
+
+                latest_card = response
             }
 
             api.request('/pummeluff/latest/', false, callback)
@@ -140,8 +140,7 @@ class API {
 
 }
 
-api         = new API()
-latest_card = undefined
+api = new API()
 
 api.refreshRegistry();
 api.refreshTypes();

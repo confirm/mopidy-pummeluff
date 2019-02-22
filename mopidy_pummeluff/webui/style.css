@@ -114,12 +114,18 @@ button
     margin-top      : 10px;
 }
 
-a#read-rfid-card
+#read-rfid-card
 {
     text-decoration: none;
     color: #fa0;
     font-size: 11px;
 }
+
+#read-rfid-card.reading {
+  animation: blink 0.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+}
+
+@keyframes blink { to { opacity: 0.25; } }
 
 /*
  * Registered Cards
@@ -161,3 +167,4 @@ div.card span.parameter
 {
     display: block;
 }
+

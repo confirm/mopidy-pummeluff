@@ -14,13 +14,12 @@ class API {
         if(data)
             init = { method: 'POST', body: data }
 
-        fetch(endpoint, init).then(function(response) {
-            let obj = response.json()
-            if(response.status == 200)
-                return obj
-            else
-                window.alert(obj.message)
-        }).then(callback)
+        fetch(endpoint, init)
+        .then(function(response)
+        {
+            return response.json()
+        })
+        .then(callback)
 
     }
 
@@ -93,7 +92,10 @@ class API {
 
         let callback = function(response)
         {
-            api.refreshRegistry()
+            if(response.success)
+                api.refreshRegistry()
+            else
+                window.alert(response.message)
         }
 
         this.request('/pummeluff/register/', data, callback)
@@ -103,14 +105,43 @@ class API {
      * Get latest scanned card.
      */
 
-    get_latest_card(callback)
+    getLatestCard()
     {
-        this.request('/pummeluff/latest/', false, callback)
+        let uid_field   = document.getElementById('uid')
+        uid_field.value = ''
+
+        let link        = document.getElementById('read-rfid-card')
+        link.classList.add('reading')
+
+        let do_request = function()
+        {
+            let callback = function(response)
+            {
+                if(!latest_card)
+                    latest_card = response
+
+                if(response.success && JSON.stringify(response) != JSON.stringify(latest_card))
+                {
+                    latest_card     = response
+                    uid_field.value = response.uid
+                    link.classList.remove('reading')
+                }
+                else
+                {
+                    setTimeout(() => do_request(), 1000)
+                }
+            }
+
+            api.request('/pummeluff/latest/', false, callback)
+        }
+
+        do_request()
     }
 
 }
 
-api = new API();
+api         = new API()
+latest_card = undefined
 
 api.refreshRegistry();
 api.refreshTypes();
@@ -121,4 +152,4 @@ document.getElementById('register-form').onsubmit = function()
     return false;
 }
 
-
+document.getElementById('read-rfid-card').onclick = () => api.getLatestCard()

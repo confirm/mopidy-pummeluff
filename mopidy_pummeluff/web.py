@@ -48,6 +48,7 @@ class LatestHandler(RequestHandler):
                 'success': False,
                 'message': 'No card scanned yet'
             }
+
         else:
             data = {
                 'success': True,

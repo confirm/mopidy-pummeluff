@@ -109,19 +109,27 @@ class RegisterHandler(RequestHandler):
         '''
         Handle POST request.
         '''
-        card = Card.register(
-            uid=self.get_argument('uid'),
-            alias=self.get_argument('alias', None),
-            parameter=self.get_argument('parameter'),
-            card_type=self.get_argument('type')
-        )
+        try:
+            card = Card.register(
+                uid=self.get_argument('uid'),
+                alias=self.get_argument('alias', None),
+                parameter=self.get_argument('parameter'),
+                card_type=self.get_argument('type')
+            )
 
-        data = {
-            'success': True,
-            'message': 'Card successfully registered',
-        }
+            data = {
+                'success': True,
+                'message': 'Card successfully registered',
+            }
 
-        data.update(card.dict)
+            data.update(card.dict)
+
+        except ValueError as ex:
+            self.set_status(400)
+            data = {
+                'success': False,
+                'message': str(ex)
+            }
 
         self.set_header('Content-type', 'application/json')
         self.write(dumps(data))

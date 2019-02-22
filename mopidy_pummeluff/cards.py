@@ -113,6 +113,12 @@ class Card(object):
         if card_type is None:
             card_type = cls.get_type(cls)
 
+        uid = uid.strip()
+        if not uid:
+            error = 'Invalid UID defined'
+            LOGGER.error(error)
+            raise ValueError(error)
+
         LOGGER.info('Registering %s card %s with parameter "%s"', card_type, uid, parameter)
 
         if cls.get_class(card_type) == Card:
@@ -122,8 +128,8 @@ class Card(object):
 
         REGISTRY[uid] = {
             'type': card_type,
-            'alias': alias,
-            'parameter': parameter
+            'alias': alias.strip(),
+            'parameter': parameter.strip()
         }
 
         return Card.all().get(uid)

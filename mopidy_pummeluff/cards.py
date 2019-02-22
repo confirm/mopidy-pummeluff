@@ -7,8 +7,10 @@ from __future__ import absolute_import, unicode_literals, print_function
 
 __all__ = (
     'Card',
-    'TracklistCard',
     'VolumeCard',
+    'TracklistCard',
+    'PauseCard',
+    'StopCard',
 )
 
 from logging import getLogger

@@ -185,7 +185,10 @@ class VolumeCard(Card):
         :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
         LOGGER.info('Setting volume to %s%', self.parameter)
-        mopidy_core.mixer.set_volume(int(self.parameter))
+        try:
+            mopidy_core.mixer.set_volume(int(self.parameter))
+        except ValueError as ex:
+            LOGGER.error(ex)
 
 
 class StopCard(Card):

@@ -15,26 +15,27 @@
             <div id="register">
                 <h2>Register New Card</h2>
                 <div>
-                    <form>
+                    <form id="register-form">
                         <label for="uid">UID</label>
-                        <input id="uid" type="text" placeholder="The unique card ID">
+                        <input id="uid" name="uid" type="text" placeholder="The unique card ID">
                         <a id="read-rfid-card" href="#">Read UID from RFID card…</a>
                         <label for="alias">Alias</label>
-                        <input id="alias" type="text" placeholder="Your personal alias / identifier">
+                        <input id="alias" name="alias" type="text" placeholder="Your personal alias / identifier">
                         <label for="type">Type</label>
-                        <select>
+                        <select id="type" name="type">
                         </select>
                         <label for="parameter">Parameter</label>
-                        <input id="parameter" type="text" placeholder="A type-specific parameter">
-                        <button role="submit">✓ Register Card</button>
+                        <input id="parameter" name="parameter" type="text" placeholder="A type-specific parameter">
+                        <button id="register-button" role="submit">✓ Register Card</button>
                     </form>
                 </div>
             </div>
-            <div id="registered">
+            <div id="registry">
                 <h2>Registered Cards</h2>
                 <div id="cards"></div>
             </div>
         </main>
+        <script src="script.js"></script>
     </body>
 
 </html>

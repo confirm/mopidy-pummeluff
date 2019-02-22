@@ -136,6 +136,7 @@ div.card
     width           : 400px;
     line-height     : 20px;
 }
+
 div.card span.uid,
 div.card span.type,
 div.card span.parameter
@@ -150,7 +151,8 @@ div.card span.type
     color           : #eee;
     font-size       : 11px;
     line-height     : 11px;
-    padding         : 2px 4px;
+    padding         : 3px 5px;
+    margin-left     : 5px;
     border-radius   : 10px;
 }
 

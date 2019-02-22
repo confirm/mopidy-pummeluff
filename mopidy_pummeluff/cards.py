@@ -190,7 +190,7 @@ class VolumeCard(Card):
         try:
             mopidy_core.mixer.set_volume(int(self.parameter))
         except ValueError as ex:
-            LOGGER.error(ex)
+            LOGGER.error(str(ex))
 
 
 class StopCard(Card):
@@ -217,7 +217,7 @@ class PauseCard(Card):
         '''
         playback = mopidy_core.playback
 
-        if playback.get_state() == 'playing':
+        if playback.get_state().get() == 'playing':
             LOGGER.info('Pausing the playback')
             playback.pause()
         else:

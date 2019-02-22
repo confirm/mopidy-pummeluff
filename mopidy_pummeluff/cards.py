@@ -123,10 +123,15 @@ class Card(object):
 
         LOGGER.info('Registering %s card %s with parameter "%s"', card_type, uid, parameter)
 
-        if cls.get_class(card_type) == Card:
+        real_cls = cls.get_class(card_type)
+
+        if real_cls == Card:
             error = 'Registering cards without explicit types are not allowed. ' \
                 'Set card_type argument on Card.register() or use register() method of explicit card classes.'
             raise InvalidCardType(error)
+
+        if hasattr(real_cls, 'validate_parameter'):
+            real_cls.validate_parameter(parameter)
 
         REGISTRY[uid] = {
             'type': card_type,
@@ -179,6 +184,21 @@ class VolumeCard(Card):
     '''
     Sets the volume to the percentage value retreived from the card's parameter.
     '''
+
+    @staticmethod
+    def validate_parameter(parameter):
+        '''
+        Validates if the parameter is an integer between 0 and 100.
+
+        :param mixed parameter: The parameter
+
+        :raises: ValueError in case the parameter is invalid
+        '''
+        try:
+            number = int(parameter)
+            assert number >= 0 and number <= 100
+        except (ValueError, AssertionError):
+            raise ValueError('Volume parameter has to be a number between 0 and 100')
 
     def action(self, mopidy_core):
         '''

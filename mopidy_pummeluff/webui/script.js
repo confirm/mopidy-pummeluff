@@ -109,10 +109,17 @@ class API {
     {
         let latest_card = undefined
 
-        let uid_field   = document.getElementById('uid')
-        uid_field.value = ''
+        let uid_field       = document.getElementById('uid')
+        let alias_field     = document.getElementById('alias')
+        let parameter_field = document.getElementById('parameter')
+        let type_select     = document.getElementById('type')
 
-        let link        = document.getElementById('read-rfid-card')
+        uid_field.value         = ''
+        alias_field.value       = ''
+        parameter_field.value   = ''
+        type_select.selectIndex = 0
+
+        let link            = document.getElementById('read-rfid-card')
         link.classList.add('reading')
 
         let do_request = function()
@@ -122,6 +129,16 @@ class API {
                 if(latest_card && response.success && JSON.stringify(response) != JSON.stringify(latest_card))
                 {
                     uid_field.value = response.uid
+
+                    if(response.alias)
+                        alias_field.value = response.alias
+
+                    if(response.parameter)
+                        parameter_field.value = response.parameter
+
+                    if(response.type)
+                        type_select.value = response.type
+
                     link.classList.remove('reading')
                 }
                 else

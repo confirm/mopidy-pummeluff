@@ -61,20 +61,26 @@ Prepare Raspberry Pi
 --------------------
 
 Before you can install and use Mopidy Pummeluff, you need to configure your Raspberry Pi.
-Just follow these steps:
+
+We want to enable the ``SPI`` interface and give the ``mopidy`` user access to it. This is required for the communication to the RFID module. Enter this command:
 
 .. code-block:: bash
 
     sudo raspi-config
 
-In the configuraton utility, **Enable the SPI** under ``5 Interfacing Options – P4 SPI``.
+In the configuraton utility, **Enable the SPI** under ``5 Interfacing Options – P4 SPI``. 
 
-After that, add your ``mopidy`` user to the ``spi`` group and reboot the RPi:
+After that, add your ``mopidy`` user to the ``spi`` and ``gpio`` group:
 
 .. code-block:: bash
 
     sudo usermod -a -G spi,gpio mopidy
-    sudo reboot
+
+If you're planning to use a card to shutdown the system, you also need to create a sudo rule, so that the ``mopidy`` user can shutdown the system without a password prompt:
+
+.. code-block:: bash
+
+    echo "mopidy ALL = NOPASSWD: /sbin/shutdown" > /etc/sudoers.d/mopidy
 
 Install via pip
 ---------------

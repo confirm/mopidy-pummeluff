@@ -7,12 +7,14 @@ from __future__ import absolute_import, unicode_literals, print_function
 
 __all__ = (
     'Card',
-    'VolumeCard',
     'TracklistCard',
+    'VolumeCard',
     'PauseCard',
     'StopCard',
+    'ShutdownCard',
 )
 
+from os import system
 from logging import getLogger
 
 from .registry import REGISTRY
@@ -228,21 +230,6 @@ class VolumeCard(Card):
             LOGGER.error(str(ex))
 
 
-class StopCard(Card):
-    '''
-    Stops the playback.
-    '''
-
-    def action(self, mopidy_core):  # pylint: disable=no-self-use
-        '''
-        Stop playback.
-
-        :param mopidy.core.Core mopidy_core: The mopidy core instance
-        '''
-        LOGGER.info('Stopping playback')
-        mopidy_core.playback.stop()
-
-
 class PauseCard(Card):
     '''
     Pauses or resumes the playback, based on the current state.
@@ -262,3 +249,33 @@ class PauseCard(Card):
         else:
             LOGGER.info('Resuming the playback')
             playback.resume()
+
+
+class StopCard(Card):
+    '''
+    Stops the playback.
+    '''
+
+    def action(self, mopidy_core):  # pylint: disable=no-self-use
+        '''
+        Stop playback.
+
+        :param mopidy.core.Core mopidy_core: The mopidy core instance
+        '''
+        LOGGER.info('Stopping playback')
+        mopidy_core.playback.stop()
+
+
+class ShutdownCard(Card):
+    '''
+    Shutting down the system.
+    '''
+
+    def action(self, mopidy_core):  # pylint: disable=no-self-use,unused-argument
+        '''
+        Shutdown.
+
+        :param mopidy.core.Core mopidy_core: The mopidy core instance
+        '''
+        LOGGER.info('Shutting down')
+        system('sudo /sbin/shutdown -h now')

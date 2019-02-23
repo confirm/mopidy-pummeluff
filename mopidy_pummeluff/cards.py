@@ -162,6 +162,20 @@ class Card(object):
 
         return card_dict
 
+    def action(self, mopidy_core):  # pylint: disable=unused-argument
+        '''
+        Action method which is executed when the card is detected on the RFID
+        reader.
+
+        :param mopidy.core.Core mopidy_core: The mopidy core instance
+
+        :raises NotImplementedError: Always raised when method not implemented
+        '''
+        cls   = self.__class__.__name__
+        error = 'Missing action() method in the %s class'
+        LOGGER.error(error, cls)
+        raise NotImplementedError(error % cls)
+
 
 class TracklistCard(Card):
     '''
@@ -193,7 +207,7 @@ class VolumeCard(Card):
 
         :param mixed parameter: The parameter
 
-        :raises: ValueError in case the parameter is invalid
+        :raises ValueError: When parameter is invalid
         '''
         try:
             number = int(parameter)
@@ -222,6 +236,8 @@ class StopCard(Card):
     def action(self, mopidy_core):  # pylint: disable=no-self-use
         '''
         Stop playback.
+
+        :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
         LOGGER.info('Stopping playback')
         mopidy_core.playback.stop()
@@ -235,6 +251,8 @@ class PauseCard(Card):
     def action(self, mopidy_core):  # pylint: disable=no-self-use
         '''
         Pause or resume the playback.
+
+        :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
         playback = mopidy_core.playback
 

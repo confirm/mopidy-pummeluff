@@ -59,7 +59,7 @@ class RegistryDict(dict):
         '''
         Read registry from disk.
 
-        :raises: IOError when registry file on disk is missing
+        :raises IOError: When registry file on disk is missing
         '''
         LOGGER.debug('Reading registry from %s', self.registry_path)
 

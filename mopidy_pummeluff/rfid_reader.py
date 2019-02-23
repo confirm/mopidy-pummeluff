@@ -5,7 +5,7 @@ Python card reader module.
 
 from __future__ import absolute_import, unicode_literals, print_function
 
-from RPi.GPIO import cleanup
+from RPi.GPIO import cleanup  # pylint: disable=no-name-in-module
 from pirc522 import RFID
 
 
@@ -44,5 +44,5 @@ class RFIDReader(RFID):
         if error:
             raise ReadError('Could not read UID')
 
-        uid = '{0[0]:02X}{0[1]:02X}{0[2]:02X}{0[3]:02X}'.format(uid_chunks)
+        uid = '{0[0]:02X}{0[1]:02X}{0[2]:02X}{0[3]:02X}'.format(uid_chunks)  # pylint: disable=invalid-format-index
         return uid

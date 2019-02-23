@@ -85,6 +85,10 @@ To install Mopidy Pummeluff via ``pip``, run this command:
 
     sudo pip install mopidy-pummeluff
 
+.. hint::
+
+    If you get an error that ``spidev`` could not be found, run ``pip install spidev`` first. This is an issue related to the ``pi-rc522`` Pypi package.
+
 Install from source
 -------------------
 
@@ -95,14 +99,12 @@ To install Mopidy Pummeluff from source, run this command:
     sudo su -
     cd /usr/src
     git clone https://github.com/confirm/mopidy-pummeluff.git
-    cd pummeluff
+    cd mopidy-pummeluff
     python setup.py install
 
-Finally restart ``mopidy``:
+.. hint::
 
-.. code-block:: bash
-
-    systemctl restart mopidy
+    If you get an error that ``spidev`` could not be found, run ``pip install spidev`` first. This is an issue related to the ``pi-rc522`` Pypi package.
 
 Configuration
 =============

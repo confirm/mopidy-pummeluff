@@ -1,0 +1,15 @@
+language: python
+
+python:
+  - 2.7
+
+install:
+  - pip install -e .[develop]
+
+script:
+    # Code style checks.
+    - pycodestyle mopidy_pummeluff
+    - pylint mopidy_pummeluff
+
+    # Build check.
+    - python setup.py build

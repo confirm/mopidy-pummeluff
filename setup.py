@@ -26,6 +26,12 @@ setup(
         'Mopidy >= 2.2.2',
         'pi-rc522 == 2.2.1',
     ],
+    extras_require={
+        'develop': [
+            'pycodestyle',
+            'pylint',
+        ]
+    },
     entry_points={
         b'mopidy.ext': [
             'pummeluff = mopidy_pummeluff:Extension',

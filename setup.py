@@ -3,7 +3,7 @@
 Setup script for Mopidy-Pummeluff module.
 '''
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 
 from setuptools import setup, find_packages
 
@@ -12,9 +12,9 @@ setup(
     use_scm_version=True,
     url='https://git.confirm.ch/dbarton/pummeluff.git',
     license='MIT',
-    author='dbarton',
-    description='Mopidy Pummeluff',
-    long_description=open('README.md').read(),
+    author='confirm IT solutions',
+    description='Mopidy Pummeluff extension',
+    long_description=open('README.rst').read(),
     packages=find_packages(exclude=['tests', 'tests.*']),
     zip_safe=False,
     include_package_data=True,
@@ -24,6 +24,7 @@ setup(
     install_requires=[
         'setuptools',
         'Mopidy >= 2.2.2',
+        'pi-rc522 == 2.2.1',
     ],
     entry_points={
         b'mopidy.ext': [

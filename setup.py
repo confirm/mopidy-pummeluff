@@ -7,6 +7,12 @@ from __future__ import absolute_import, unicode_literals, print_function
 
 from setuptools import setup, find_packages
 
+with open('requirements.txt') as f:
+    requirements = f.read().strip().split('\n')
+
+with open('requirements_dev.txt') as f:
+    requirements_dev = f.read().strip().split('\n')
+
 setup(
     name='Mopidy-Pummeluff',
     use_scm_version=True,
@@ -21,11 +27,10 @@ setup(
     setup_requires=[
         'setuptools_scm',
     ],
-    install_requires=[
-        'setuptools',
-        'Mopidy >= 2.2.2',
-        'pi-rc522 == 2.2.1',
-    ],
+    install_requires=['setuptools'] + requirements,
+    extras_require={
+        'develop': requirements_dev
+    },
     entry_points={
         b'mopidy.ext': [
             'pummeluff = mopidy_pummeluff:Extension',

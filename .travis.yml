@@ -1,0 +1,19 @@
+language: python
+
+python:
+  - 2.7
+
+install:
+  # Workaround for pi-rc522 dependency issue.
+  - pip install spidev RPi.GPIO
+
+  # Install package develop
+  - pip install -e .[develop]
+
+script:
+    # Code style checks.
+    - pycodestyle mopidy_pummeluff
+    - pylint mopidy_pummeluff
+
+    # Build check.
+    - python setup.py build

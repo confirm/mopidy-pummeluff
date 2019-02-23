@@ -22,7 +22,7 @@ from .frontend import CardReader
 LOGGER = getLogger(__name__)
 
 
-class LatestHandler(RequestHandler):
+class LatestHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
     Request handler which returns the latest scanned card.
     '''
@@ -61,7 +61,7 @@ class LatestHandler(RequestHandler):
         self.write(dumps(data))
 
 
-class RegistryHandler(RequestHandler):
+class RegistryHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
     Request handler which returns all registered cards.
     '''
@@ -93,7 +93,7 @@ class RegistryHandler(RequestHandler):
         self.write(dumps(data))
 
 
-class RegisterHandler(RequestHandler):
+class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
     Request handler which registers an RFID card in the registry.
     '''
@@ -142,7 +142,7 @@ class RegisterHandler(RequestHandler):
         self.post()
 
 
-class TypesHandler(RequestHandler):
+class TypesHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
     Request handler which returns all card types.
     '''

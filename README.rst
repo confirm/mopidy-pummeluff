@@ -43,7 +43,7 @@ Please connect the ``RC522`` RFID module to the RPi as follows:
 - ``RC522 pin 7 [RST ]`` ––– ``RPi pin 22 [ GPIO 25 ]``
 - ``RC522 pin 8 [3.3V]`` ––– ``RPi pin 17 [3.3V PWR ]``
 
-Please have a look at the `Raspberry Pi SPI Pinout <https://pinout.xyz/pinout/spi>`_ if you want to have a graphical view of the RPi GPIO pins. 
+Please have a look at the `Raspberry Pi SPI pinout <https://pinout.xyz/pinout/spi>`_ if you want to have a graphical view of the RPi GPIO pins. 
 
 .. note::
     
@@ -85,7 +85,7 @@ If you're planning to use a card to shutdown the system, you also need to create
 Install via pip
 ---------------
 
-To install Mopidy Pummeluff via ``pip``, run this command:
+The recommended way to install Mopidy Pummeluff by using ``pip`` and thus by executing the following command:
 
 .. code-block:: bash
 
@@ -98,7 +98,7 @@ To install Mopidy Pummeluff via ``pip``, run this command:
 Install from source
 -------------------
 
-To install Mopidy Pummeluff from source, run this command:
+Alternatively, you can also install Mopidy Pummeluff from source, by running this command:
 
 .. code-block:: bash
 

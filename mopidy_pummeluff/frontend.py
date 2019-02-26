@@ -5,6 +5,7 @@ Python module for Mopidy Pummeluff frontend.
 
 from __future__ import absolute_import, unicode_literals, print_function
 
+from os import path, system
 from threading import Thread, Event
 from time import time
 from logging import getLogger
@@ -17,14 +18,22 @@ from .cards import Card
 
 LOGGER = getLogger(__name__)
 
-LAST_UID = ''
-
 
 class CardReader(Thread):
     '''
     Thread class which reads RFID cards from the RFID reader.
     '''
     latest = None
+
+    @staticmethod
+    def play_sound(sound):
+        '''
+        Play sound via aplay.
+
+        :param str sound: The name of the sound file
+        '''
+        file_path = path.join(path.dirname(__file__), 'sounds', sound)
+        system('aplay -q {}'.format(file_path))
 
     def __init__(self, core, stop_event):
         '''
@@ -73,9 +82,12 @@ class CardReader(Thread):
 
         if card.registered:
             LOGGER.info('Triggering action of registered card')
+            self.play_sound('success.wav')
             card.action(mopidy_core=self.core)
+
         else:
             LOGGER.info('Card is not registered, thus doing nothing')
+            self.play_sound('fail.wav')
 
         card.scanned      = time()
         CardReader.latest = card

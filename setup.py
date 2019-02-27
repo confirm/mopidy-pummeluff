@@ -19,7 +19,7 @@ setup(
     url='https://github.com/confirm/mopidy-pummeluff',
     license='MIT',
     author='confirm IT solutions',
-    description='Mopidy Pummeluff extension',
+    description='Pummeluff is a Mopidy extension which allows you to control Mopidy via RFID cards',
     long_description=open('README.rst').read(),
     packages=find_packages(exclude=['tests', 'tests.*']),
     zip_safe=False,

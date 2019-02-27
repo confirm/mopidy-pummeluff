@@ -21,8 +21,14 @@ LOGGER = getLogger(__name__)
 
 class CardReader(Thread):
     '''
-    Thread class which reads RFID cards from the RFID reader.
+    Thread which reads RFID cards from the RFID reader.
+
+    Because the RFID reader algorithm is reacting to an IRQ (interrupt), it is
+    blocking as long as no card is touched, even when Mopidy is exiting. Thus,
+    we're running the thread as daemon thread, which means it's exiting at the
+    same moment as the main thread (aka Mopidy core) is exiting.
     '''
+    daemon = True
     latest = None
 
     @staticmethod

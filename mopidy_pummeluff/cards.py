@@ -72,7 +72,7 @@ class Card(object):
         args = [core]
         if self.parameter:
             args.append(self.parameter)
-        self.action(*args)  # pylint: disable=no-member
+        getattr(actions, self.action)(*args)
 
     @staticmethod
     def get_class(card_type):
@@ -179,20 +179,35 @@ class Card(object):
 
         return card_dict
 
+    @property
+    def action(self):
+        '''
+        Return a name of an action (function) defined in the
+        :py:mod:`mopidy_pummeluff.actions` Python module.
+
+        :return: An action name
+        :rtype: str
+        :raises NotImplementedError: When action property isn't defined
+        '''
+        cls   = self.__class__.__name__
+        error = 'Missing action property in the %s class'
+        LOGGER.error(error, cls)
+        raise NotImplementedError(error % cls)
+
 
 class TracklistCard(Card):
     '''
     Replaces the current tracklist with the URI retreived from the card's
     parameter.
     '''
-    action = actions.replace_tracklist
+    action = 'replace_tracklist'
 
 
 class VolumeCard(Card):
     '''
     Sets the volume to the percentage value retreived from the card's parameter.
     '''
-    action = actions.set_volume
+    action = 'set_volume'
 
     @staticmethod
     def validate_parameter(parameter):
@@ -214,18 +229,18 @@ class PlayPauseCard(Card):
     '''
     Pauses or resumes the playback, based on the current state.
     '''
-    action = actions.play_pause
+    action = 'play_pause'
 
 
 class StopCard(Card):
     '''
     Stops the playback.
     '''
-    action = actions.stop
+    action = 'stop'
 
 
 class ShutdownCard(Card):
     '''
     Shutting down the system.
     '''
-    action = actions.shutdown
+    action = 'shutdown'

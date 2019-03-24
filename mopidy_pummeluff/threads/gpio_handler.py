@@ -27,11 +27,11 @@ class GPIOHandler(Thread):
     LED when it's started and then reacting to button presses.
     '''
     button_pins = {
-        11: shutdown,
-        12: play_pause,
+        5: shutdown,
+        7: play_pause,
     }
 
-    led_pin = 7
+    led_pin = 8
 
     def __init__(self, core, stop_event):
         '''

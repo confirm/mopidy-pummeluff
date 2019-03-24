@@ -19,11 +19,16 @@ Hardware
 Requirements
 ------------
 
-To get the whole thing working, you need the following hardware:
+To get the whole thing working, you need at least the following hardware:
 
 - A Raspberry Pi 3 Model B
-- An ``RC522`` RFID module (available on `AliExpress <https://www.aliexpress.com/wholesale?SearchText=rc522>`_ for approx. *USD 1*)
-- RFID cards, keyfobs or stickers (``ISO 14443A`` and ``Mifare`` should work)
+- An ``RC522`` RFID module (`RC522 available on AliExpress <https://www.aliexpress.com/wholesale?SearchText=rc522>`_ for approx. *USD 1*)
+- Female dupont jumper wires (`female dupont jumper cables on AliExpress <https://www.aliexpress.com/wholesale?SearchText=dupont>`_ for approx. *1 USD*)
+- RFID cards, keyfobs or stickers (``ISO 14443A`` & ``Mifare`` should work, )
+
+Optionally you can also add two physical buttons to the RPi, which can be used for power & playback control. Have a look at `momentary push buttons on AliExpress <https://www.aliexpress.com/wholesale?SearchText=momentary+push+button>`_ for approx. *USD 1-2*. 
+
+Pummeluff also supports an optional status LED, which only lights up when its is running. There are push buttons with integrated LED's (``3V`` & ``5V``) available.
 
 .. note::
 
@@ -54,6 +59,25 @@ Please have a look at the `Raspberry Pi SPI pinout <https://pinout.xyz/pinout/sp
     Some manuals in the internet mention that the ``IRQ`` pin shouldn't be connected.
     However, Mopidy Pummeluff really uses the ``IRQ`` pin for the interrupt, so that less CPU cycles are used for the card reading daemon. If you don't connect the ``IRQ`` pin, Mopidy Pummeluff won't work!
 
+Connecting the buttons (optional)
+---------------------------------
+
+You can connect two buttons to the RPi:
+
+- ``RPi pin 11``: Power button, shutdown the Raspberry Pi into halt state & wake it up again from halt state
+- ``RPi pin 12``: Playback button, pause and resume the playback
+
+The buttons must shortcut their corresponding pins against ``GND`` (e.g. pin ``9``) when pressed. For example, this means you want to connect the ``C`` pin to ``GND`` and the corresponding pin above to the ``NO`` (*normally open*) pin of the button.
+
+Connecting the status LED (optional)
+------------------------------------
+
+If you want to have a status LED which is turned on when the RPi is running, you can connect an LED to a ``GND`` pin (e.g. pin ``9``) & to pin ``7``.
+
+.. note::
+    
+    Pin ``7`` will provide ``3.3V`` in case RPi is running. Please make sure your LED can handle it or add a resistor.
+
 Installation
 ============
 
@@ -76,7 +100,7 @@ After that, add your ``mopidy`` user to the ``spi`` and ``gpio`` group:
 
     sudo usermod -a -G spi,gpio mopidy
 
-If you're planning to use a card to shutdown the system, you also need to create a sudo rule, so that the ``mopidy`` user can shutdown the system without a password prompt:
+If you're planning to use a button or card to shutdown the system, you also need to create a sudo rule, so that the ``mopidy`` user can shutdown the system without a password prompt:
 
 .. code-block:: bash
 

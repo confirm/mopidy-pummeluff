@@ -15,6 +15,7 @@ from logging import getLogger
 import RPi.GPIO as GPIO
 
 from mopidy_pummeluff.actions import shutdown, play_pause
+from mopidy_pummeluff.sound import play_sound
 
 LOGGER = getLogger(__name__)
 
@@ -62,6 +63,7 @@ class GPIOHandler(Thread):
         GPIO.setmode(GPIO.BOARD)
 
         def callback(pin):  # pylint: disable=missing-docstring
+            play_sound('success.wav')
             self.button_pins[pin](self.core)
 
         for pin in self.button_pins.values():

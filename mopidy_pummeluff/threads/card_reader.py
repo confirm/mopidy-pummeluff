@@ -9,7 +9,6 @@ __all__ = (
     'CardReader',
 )
 
-from os import path, system
 from threading import Thread
 from time import time
 from logging import getLogger
@@ -18,6 +17,7 @@ import RPi.GPIO as GPIO
 from pirc522 import RFID
 
 from mopidy_pummeluff.cards import Card
+from mopidy_pummeluff.sound import play_sound
 
 LOGGER = getLogger(__name__)
 
@@ -39,16 +39,6 @@ class CardReader(Thread):
     '''
     daemon = True
     latest = None
-
-    @staticmethod
-    def play_sound(sound):
-        '''
-        Play sound via aplay.
-
-        :param str sound: The name of the sound file
-        '''
-        file_path = path.join(path.dirname(__file__), 'sounds', sound)
-        system('aplay -q {}'.format(file_path))
 
     def __init__(self, core, stop_event):
         '''
@@ -119,12 +109,12 @@ class CardReader(Thread):
 
         if card.registered:
             LOGGER.info('Triggering action of registered card')
-            self.play_sound('success.wav')
+            play_sound('success.wav')
             card(self.core)
 
         else:
             LOGGER.info('Card is not registered, thus doing nothing')
-            self.play_sound('fail.wav')
+            play_sound('fail.wav')
 
         card.scanned      = time()
         CardReader.latest = card

@@ -89,7 +89,7 @@ class CardReader(Thread):
         if card.registered:
             LOGGER.info('Triggering action of registered card')
             self.play_sound('success.wav')
-            card.action(mopidy_core=self.core)
+            card(mopidy_core=self.core)
 
         else:
             LOGGER.info('Card is not registered, thus doing nothing')

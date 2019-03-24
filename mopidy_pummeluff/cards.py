@@ -9,15 +9,15 @@ __all__ = (
     'Card',
     'TracklistCard',
     'VolumeCard',
-    'PauseCard',
+    'PlayPauseCard',
     'StopCard',
     'ShutdownCard',
 )
 
-from os import system
 from logging import getLogger
 
 from .registry import REGISTRY
+from . import actions
 
 
 LOGGER = getLogger(__name__)
@@ -61,6 +61,18 @@ class Card(object):
         cls_name   = self.__class__.__name__
         identifier = self.alias or self.uid
         return '<{}: {}>'.format(cls_name, identifier)
+
+    def __call__(self, core):
+        '''
+        Action method which is called when the card is detected on the RFID
+        reader.
+
+        :param mopidy.core.Core core: The mopidy core instance
+        '''
+        args = [core]
+        if self.parameter:
+            args.append(self.parameter)
+        self.action(*args)  # pylint: disable=no-member
 
     @staticmethod
     def get_class(card_type):
@@ -112,6 +124,9 @@ class Card(object):
         :param str alias: The card's alias
         :param str parameter: The optional parameter
         :param str card_type: The card type
+
+        :return: The registered card
+        :rtype: Card
         '''
 
         if card_type is None:
@@ -164,43 +179,20 @@ class Card(object):
 
         return card_dict
 
-    def action(self, mopidy_core):  # pylint: disable=unused-argument
-        '''
-        Action method which is executed when the card is detected on the RFID
-        reader.
-
-        :param mopidy.core.Core mopidy_core: The mopidy core instance
-
-        :raises NotImplementedError: Always raised when method not implemented
-        '''
-        cls   = self.__class__.__name__
-        error = 'Missing action() method in the %s class'
-        LOGGER.error(error, cls)
-        raise NotImplementedError(error % cls)
-
 
 class TracklistCard(Card):
     '''
     Replaces the current tracklist with the URI retreived from the card's
     parameter.
     '''
-
-    def action(self, mopidy_core):
-        '''
-        Replace tracklist and play.
-
-        :param mopidy.core.Core mopidy_core: The mopidy core instance
-        '''
-        LOGGER.info('Replacing tracklist with URI "%s"', self.parameter)
-        mopidy_core.tracklist.clear()
-        mopidy_core.tracklist.add(uri=self.parameter)
-        mopidy_core.playback.play()
+    action = actions.replace_tracklist
 
 
 class VolumeCard(Card):
     '''
     Sets the volume to the percentage value retreived from the card's parameter.
     '''
+    action = actions.set_volume
 
     @staticmethod
     def validate_parameter(parameter):
@@ -217,65 +209,23 @@ class VolumeCard(Card):
         except (ValueError, AssertionError):
             raise ValueError('Volume parameter has to be a number between 0 and 100')
 
-    def action(self, mopidy_core):
-        '''
-        Set volume.
 
-        :param mopidy.core.Core mopidy_core: The mopidy core instance
-        '''
-        LOGGER.info('Setting volume to %s', self.parameter)
-        try:
-            mopidy_core.mixer.set_volume(int(self.parameter))
-        except ValueError as ex:
-            LOGGER.error(str(ex))
-
-
-class PauseCard(Card):
+class PlayPauseCard(Card):
     '''
     Pauses or resumes the playback, based on the current state.
     '''
-
-    def action(self, mopidy_core):  # pylint: disable=no-self-use
-        '''
-        Pause or resume the playback.
-
-        :param mopidy.core.Core mopidy_core: The mopidy core instance
-        '''
-        playback = mopidy_core.playback
-
-        if playback.get_state().get() == 'playing':
-            LOGGER.info('Pausing the playback')
-            playback.pause()
-        else:
-            LOGGER.info('Resuming the playback')
-            playback.resume()
+    action = actions.play_pause
 
 
 class StopCard(Card):
     '''
     Stops the playback.
     '''
-
-    def action(self, mopidy_core):  # pylint: disable=no-self-use
-        '''
-        Stop playback.
-
-        :param mopidy.core.Core mopidy_core: The mopidy core instance
-        '''
-        LOGGER.info('Stopping playback')
-        mopidy_core.playback.stop()
+    action = actions.stop
 
 
 class ShutdownCard(Card):
     '''
     Shutting down the system.
     '''
-
-    def action(self, mopidy_core):  # pylint: disable=no-self-use,unused-argument
-        '''
-        Shutdown.
-
-        :param mopidy.core.Core mopidy_core: The mopidy core instance
-        '''
-        LOGGER.info('Shutting down')
-        system('sudo /sbin/shutdown -h now')
+    action = actions.shutdown

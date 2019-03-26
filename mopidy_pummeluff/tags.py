@@ -55,7 +55,8 @@ class Tag(object):
         return instance
 
     def __init__(self, uid):
-        self.uid = uid
+        self.uid     = uid
+        self.scanned = None
 
     def __str__(self):
         cls_name   = self.__class__.__name__
@@ -174,8 +175,7 @@ class Tag(object):
             'parameter': self.parameter,
         }
 
-        if hasattr(self, 'scanned'):
-            tag_dict['scanned'] = self.scanned
+        tag_dict['scanned'] = self.scanned
 
         return tag_dict
 

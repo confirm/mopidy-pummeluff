@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 '''
-Python module for Mopidy Pummeluff cards.
+Python module for Mopidy Pummeluff tags.
 '''
 
 from __future__ import absolute_import, unicode_literals, print_function
 
 __all__ = (
-    'Card',
-    'TracklistCard',
-    'VolumeCard',
-    'PlayPauseCard',
-    'StopCard',
-    'ShutdownCard',
+    'Tag',
+    'TracklistTag',
+    'VolumeTag',
+    'PlayPauseTag',
+    'StopTag',
+    'ShutdownTag',
 )
 
 from logging import getLogger
@@ -23,34 +23,34 @@ from . import actions
 LOGGER = getLogger(__name__)
 
 
-class InvalidCardType(Exception):
+class InvalidTagType(Exception):
     '''
-    Exception which is thrown when an invalid card type is defined.
+    Exception which is thrown when an invalid tag type is defined.
     '''
     pass
 
 
-class Card(object):
+class Tag(object):
     '''
-    Base RFID card class, which will implement the factory pattern in Python's
+    Base RFID tag class, which will implement the factory pattern in Python's
     own :py:meth:`__new__` method.
     '''
 
     def __new__(cls, uid):
         '''
-        Implement factory pattern and return correct card instance.
+        Implement factory pattern and return correct tag instance.
         '''
-        card         = REGISTRY.get(uid, {})
-        new_cls      = cls.get_class(card.get('type', ''))
+        tag         = REGISTRY.get(uid, {})
+        new_cls      = cls.get_class(tag.get('type', ''))
 
-        if cls is Card and cls is not new_cls:
+        if cls is Tag and cls is not new_cls:
             instance = new_cls(uid=uid)
         else:
-            instance = super(Card, cls).__new__(cls, uid=uid)
+            instance = super(Tag, cls).__new__(cls, uid=uid)
 
-        instance.registered = bool(card)
-        instance.alias      = card.get('alias')
-        instance.parameter  = card.get('parameter')
+        instance.registered = bool(tag)
+        instance.alias      = tag.get('alias')
+        instance.parameter  = tag.get('parameter')
 
         return instance
 
@@ -64,7 +64,7 @@ class Card(object):
 
     def __call__(self, core):
         '''
-        Action method which is called when the card is detected on the RFID
+        Action method which is called when the tag is detected on the RFID
         reader.
 
         :param mopidy.core.Core core: The mopidy core instance
@@ -75,62 +75,62 @@ class Card(object):
         getattr(actions, self.action)(*args)
 
     @staticmethod
-    def get_class(card_type):
+    def get_class(tag_type):
         '''
-        Return class for specific card type.
+        Return class for specific tag type.
 
-        :param str card_type: The card type
+        :param str tag_type: The tag type
 
-        :return: The card class
+        :return: The tag class
         :rtype: type
         '''
         try:
-            name = card_type.title() + 'Card'
+            name = tag_type.title() + 'Tag'
             cls  = globals()[name]
-            assert issubclass(cls, Card)
+            assert issubclass(cls, Tag)
         except (KeyError, AssertionError):
-            raise InvalidCardType('Card class for type "{}" does\'t exist.'.format(card_type))
+            raise InvalidTagType('Tag class for type "{}" does\'t exist.'.format(tag_type))
 
         return cls
 
     @classmethod
-    def get_type(cls, card_class=None):
+    def get_type(cls, tag_class=None):
         '''
-        Return the type for a specific card class.
+        Return the type for a specific tag class.
 
-        :param type card_class: The card class
+        :param type tag_class: The tag class
 
-        :return: The card type
+        :return: The tag type
         :rtype: str
         '''
-        return (card_class or cls).__name__[0:-4].lower()
+        return (tag_class or cls).__name__[0:-3].lower()
 
     @classmethod
     def all(cls):
         '''
-        Return all registered cards in a list.
+        Return all registered tags in a list.
 
-        :return: Registered cards
-        :rtype: list[Card]
+        :return: Registered tags
+        :rtype: list[Tag]
         '''
-        return {uid: Card(uid=uid) for uid in REGISTRY}
+        return {uid: Tag(uid=uid) for uid in REGISTRY}
 
     @classmethod
-    def register(cls, uid, alias=None, parameter=None, card_type=None):
+    def register(cls, uid, alias=None, parameter=None, tag_type=None):
         '''
-        Register card in the registry.
+        Register tag in the registry.
 
-        :param str uid: The card's UID
-        :param str alias: The card's alias
+        :param str uid: The tag's UID
+        :param str alias: The tag's alias
         :param str parameter: The optional parameter
-        :param str card_type: The card type
+        :param str tag_type: The tag type
 
-        :return: The registered card
-        :rtype: Card
+        :return: The registered tag
+        :rtype: Tag
         '''
 
-        if card_type is None:
-            card_type = cls.get_type(cls)
+        if tag_type is None:
+            tag_type = cls.get_type(cls)
 
         uid = uid.strip()
         if not uid:
@@ -138,36 +138,36 @@ class Card(object):
             LOGGER.error(error)
             raise ValueError(error)
 
-        LOGGER.info('Registering %s card %s with parameter "%s"', card_type, uid, parameter)
+        LOGGER.info('Registering %s tag %s with parameter "%s"', tag_type, uid, parameter)
 
-        real_cls = cls.get_class(card_type)
+        real_cls = cls.get_class(tag_type)
 
-        if real_cls == Card:
-            error = 'Registering cards without explicit types are not allowed. ' \
-                'Set card_type argument on Card.register() ' \
-                'or use register() method of explicit card classes.'
-            raise InvalidCardType(error)
+        if real_cls == Tag:
+            error = 'Registering tags without explicit types are not allowed. ' \
+                'Set tag_type argument on Tag.register() ' \
+                'or use register() method of explicit tag classes.'
+            raise InvalidTagType(error)
 
         if hasattr(real_cls, 'validate_parameter'):
             real_cls.validate_parameter(parameter)
 
         REGISTRY[uid] = {
-            'type': card_type,
+            'type': tag_type,
             'alias': alias.strip(),
             'parameter': parameter.strip()
         }
 
-        return Card.all().get(uid)
+        return Tag.all().get(uid)
 
     @property
     def dict(self):
         '''
-        Return the dict version of this card.
+        Return the dict version of this tag.
 
-        :return: The dict version of this card
+        :return: The dict version of this tag
         :rtype: dict
         '''
-        card_dict = {
+        tag_dict = {
             'uid': self.uid,
             'alias': self.alias,
             'type': self.get_type(),
@@ -175,9 +175,9 @@ class Card(object):
         }
 
         if hasattr(self, 'scanned'):
-            card_dict['scanned'] = self.scanned
+            tag_dict['scanned'] = self.scanned
 
-        return card_dict
+        return tag_dict
 
     @property
     def action(self):
@@ -195,17 +195,17 @@ class Card(object):
         raise NotImplementedError(error % cls)
 
 
-class TracklistCard(Card):
+class TracklistTag(Tag):
     '''
-    Replaces the current tracklist with the URI retreived from the card's
+    Replaces the current tracklist with the URI retreived from the tag's
     parameter.
     '''
     action = 'replace_tracklist'
 
 
-class VolumeCard(Card):
+class VolumeTag(Tag):
     '''
-    Sets the volume to the percentage value retreived from the card's parameter.
+    Sets the volume to the percentage value retreived from the tag's parameter.
     '''
     action = 'set_volume'
 
@@ -225,21 +225,21 @@ class VolumeCard(Card):
             raise ValueError('Volume parameter has to be a number between 0 and 100')
 
 
-class PlayPauseCard(Card):
+class PlayPauseTag(Tag):
     '''
     Pauses or resumes the playback, based on the current state.
     '''
     action = 'play_pause'
 
 
-class StopCard(Card):
+class StopTag(Tag):
     '''
     Stops the playback.
     '''
     action = 'stop'
 
 
-class ShutdownCard(Card):
+class ShutdownTag(Tag):
     '''
     Shutting down the system.
     '''

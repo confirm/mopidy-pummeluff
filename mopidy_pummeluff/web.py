@@ -16,15 +16,15 @@ from logging import getLogger
 
 from tornado.web import RequestHandler
 
-from . import cards
-from .frontend import CardReader
+from . import tags
+from .threads import TagReader
 
 LOGGER = getLogger(__name__)
 
 
 class LatestHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
-    Request handler which returns the latest scanned card.
+    Request handler which returns the latest scanned tag.
     '''
 
     def initialize(self, core):  # pylint: disable=arguments-differ
@@ -39,23 +39,23 @@ class LatestHandler(RequestHandler):  # pylint: disable=abstract-method
         '''
         Handle GET request.
         '''
-        card = CardReader.latest
+        tag = TagReader.latest
 
-        LOGGER.debug('Returning latest card %s', card)
+        LOGGER.debug('Returning latest tag %s', tag)
 
-        if card is None:
+        if tag is None:
             data = {
                 'success': False,
-                'message': 'No card scanned yet'
+                'message': 'No tag scanned yet'
             }
 
         else:
             data = {
                 'success': True,
-                'message': 'Scanned card found',
+                'message': 'Scanned tag found',
             }
 
-            data.update(card.dict)
+            data.update(tag.dict)
 
         self.set_header('Content-type', 'application/json')
         self.write(dumps(data))
@@ -63,7 +63,7 @@ class LatestHandler(RequestHandler):  # pylint: disable=abstract-method
 
 class RegistryHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
-    Request handler which returns all registered cards.
+    Request handler which returns all registered tags.
     '''
 
     def initialize(self, core):  # pylint: disable=arguments-differ
@@ -78,15 +78,15 @@ class RegistryHandler(RequestHandler):  # pylint: disable=abstract-method
         '''
         Handle GET request.
         '''
-        cards_list = []
+        tags_list = []
 
-        for card in cards.Card.all().values():
-            cards_list.append(card.dict)
+        for tag in tags.Tag.all().values():
+            tags_list.append(tag.dict)
 
         data = {
             'success': True,
             'message': 'Registry successfully read',
-            'cards': cards_list
+            'tags': tags_list
         }
 
         self.set_header('Content-type', 'application/json')
@@ -95,7 +95,7 @@ class RegistryHandler(RequestHandler):  # pylint: disable=abstract-method
 
 class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
-    Request handler which registers an RFID card in the registry.
+    Request handler which registers an RFID tag in the registry.
     '''
 
     def initialize(self, core):  # pylint: disable=arguments-differ
@@ -111,19 +111,19 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
         Handle POST request.
         '''
         try:
-            card = cards.Card.register(
+            tag = tags.Tag.register(
                 uid=self.get_argument('uid'),
                 alias=self.get_argument('alias', None),
                 parameter=self.get_argument('parameter'),
-                card_type=self.get_argument('type')
+                tag_type=self.get_argument('type')
             )
 
             data = {
                 'success': True,
-                'message': 'Card successfully registered',
+                'message': 'Tag successfully registered',
             }
 
-            data.update(card.dict)
+            data.update(tag.dict)
 
         except ValueError as ex:
             self.set_status(400)
@@ -144,7 +144,7 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
 
 class TypesHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
-    Request handler which returns all card types.
+    Request handler which returns all tag types.
     '''
 
     def initialize(self, core):  # pylint: disable=arguments-differ
@@ -161,12 +161,12 @@ class TypesHandler(RequestHandler):  # pylint: disable=abstract-method
         '''
         types = {}
 
-        for cls_name in cards.__all__:
-            card_cls = getattr(cards, cls_name)
-            if card_cls is not cards.Card:
-                card_type        = cards.Card.get_type(card_cls)
-                card_doc         = card_cls.__doc__.strip().split('.')[0]
-                types[card_type] = card_doc
+        for cls_name in tags.__all__:
+            tag_cls = getattr(tags, cls_name)
+            if tag_cls is not tags.Tag:
+                tag_type        = tags.Tag.get_type(tag_cls)
+                tag_doc         = tag_cls.__doc__.strip().split('.')[0]
+                types[tag_type] = tag_doc
 
         data = {
             'success': True,

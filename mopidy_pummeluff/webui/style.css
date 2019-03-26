@@ -114,24 +114,24 @@ button
     margin-top      : 10px;
 }
 
-#read-rfid-card
+#read-rfid-tag
 {
     text-decoration: none;
     color: #fa0;
     font-size: 11px;
 }
 
-#read-rfid-card.reading {
+#read-rfid-tag.reading {
   animation: blink 0.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;
 }
 
 @keyframes blink { to { opacity: 0.25; } }
 
 /*
- * Registered Cards
+ * Registered Tags
  */
 
-div.card
+div.tag
 {
     display         : inline-block;
     background-color: #eee;
@@ -143,14 +143,14 @@ div.card
     line-height     : 20px;
 }
 
-div.card span.uid,
-div.card span.type,
-div.card span.parameter
+div.tag span.uid,
+div.tag span.type,
+div.tag span.parameter
 {
     font-family: Courier New, monospace;
 }
 
-div.card span.type
+div.tag span.type
 {
     display         : inline-block;
     background-color: #888;
@@ -162,8 +162,8 @@ div.card span.type
     border-radius   : 10px;
 }
 
-div.card span.alias,
-div.card span.parameter
+div.tag span.alias,
+div.tag span.parameter
 {
     display: block;
 }

@@ -31,26 +31,26 @@ class API {
     {
         let callback = function(response)
         {
-            let cardsContainer = document.getElementById('cards')
-            while(cardsContainer.firstChild)
-                cardsContainer.removeChild(cardsContainer.firstChild)
+            let tagsContainer = document.getElementById('tags')
+            while(tagsContainer.firstChild)
+                tagsContainer.removeChild(tagsContainer.firstChild)
 
-            for(let card of response.cards)
+            for(let tag of response.tags)
             {
-                let cardElement = document.createElement('div')
-                cardElement.setAttribute('class', 'card')
+                let tagElement = document.createElement('div')
+                tagElement.setAttribute('class', 'tag')
 
                 let args = new Array('alias', 'uid', 'type', 'parameter')
                 for(let arg of args)
                 {
                     let spanElement = document.createElement('span')
-                    let value = card[arg] ? card[arg] : '-'
+                    let value = tag[arg] ? tag[arg] : '-'
                     spanElement.setAttribute('class', arg)
                     spanElement.innerHTML = value
-                    cardElement.appendChild(spanElement)
+                    tagElement.appendChild(spanElement)
                 }
 
-                cardsContainer.appendChild(cardElement)
+                tagsContainer.appendChild(tagElement)
             }
         }
 
@@ -58,7 +58,7 @@ class API {
     }
 
     /*
-     * Refresh the card types.
+     * Refresh the tag types.
      */
 
     refreshTypes()
@@ -82,7 +82,7 @@ class API {
     }
 
     /*
-     * Register a new card.
+     * Register a new tag.
      */
 
     register()
@@ -110,12 +110,12 @@ class API {
     }
 
     /*
-     * Get latest scanned card.
+     * Get latest scanned tag.
      */
 
-    getLatestCard()
+    getLatestTag()
     {
-        let latest_card = undefined
+        let latest_tag = undefined
 
         let uid_field       = document.getElementById('uid')
         let alias_field     = document.getElementById('alias')
@@ -127,14 +127,14 @@ class API {
         parameter_field.value   = ''
         type_select.selectIndex = 0
 
-        let link            = document.getElementById('read-rfid-card')
+        let link            = document.getElementById('read-rfid-tag')
         link.classList.add('reading')
 
         let do_request = function()
         {
             let callback = function(response)
             {
-                if(latest_card && response.success && JSON.stringify(response) != JSON.stringify(latest_card))
+                if(latest_tag && response.success && JSON.stringify(response) != JSON.stringify(latest_tag))
                 {
                     uid_field.value = response.uid
 
@@ -154,7 +154,7 @@ class API {
                     setTimeout(() => do_request(), 1000)
                 }
 
-                latest_card = response
+                latest_tag = response
             }
 
             api.request('/pummeluff/latest/', false, callback)
@@ -176,4 +176,4 @@ document.getElementById('register-form').onsubmit = function()
     return false;
 }
 
-document.getElementById('read-rfid-card').onclick = () => api.getLatestCard()
+document.getElementById('read-rfid-tag').onclick = () => api.getLatestTag()

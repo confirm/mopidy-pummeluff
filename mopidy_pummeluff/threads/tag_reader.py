@@ -6,7 +6,7 @@ Python module for the dedicated Mopidy Pummeluff threads.
 from __future__ import absolute_import, unicode_literals, print_function
 
 __all__ = (
-    'CardReader',
+    'TagReader',
 )
 
 from threading import Thread
@@ -16,7 +16,7 @@ from logging import getLogger
 import RPi.GPIO as GPIO
 from pirc522 import RFID
 
-from mopidy_pummeluff.cards import Card
+from mopidy_pummeluff.tags import Tag
 from mopidy_pummeluff.sound import play_sound
 
 LOGGER = getLogger(__name__)
@@ -28,12 +28,12 @@ class ReadError(Exception):
     '''
 
 
-class CardReader(Thread):
+class TagReader(Thread):
     '''
-    Thread which reads RFID cards from the RFID reader.
+    Thread which reads RFID tags from the RFID reader.
 
     Because the RFID reader algorithm is reacting to an IRQ (interrupt), it is
-    blocking as long as no card is touched, even when Mopidy is exiting. Thus,
+    blocking as long as no tag is touched, even when Mopidy is exiting. Thus,
     we're running the thread as daemon thread, which means it's exiting at the
     same moment as the main thread (aka Mopidy core) is exiting.
     '''
@@ -47,7 +47,7 @@ class CardReader(Thread):
         :param mopidy.core.Core core: The mopidy core instance
         :param threading.Event stop_event: The stop event
         '''
-        super(CardReader, self).__init__()
+        super(TagReader, self).__init__()
         self.core       = core
         self.stop_event = stop_event
         self.rfid       = RFID()
@@ -68,7 +68,7 @@ class CardReader(Thread):
                 uid = self.read_uid()
 
                 if now - prev_time > 1 or uid != prev_uid:
-                    LOGGER.info('Card %s read', uid)
+                    LOGGER.info('Tag %s read', uid)
                     self.handle_uid(uid)
 
                 prev_time = now
@@ -81,7 +81,7 @@ class CardReader(Thread):
 
     def read_uid(self):
         '''
-        Return the UID from the card.
+        Return the UID from the tag.
 
         :return: The hex UID
         :rtype: string
@@ -101,20 +101,20 @@ class CardReader(Thread):
 
     def handle_uid(self, uid):
         '''
-        Handle the scanned card / retreived UID.
+        Handle the scanned tag / retreived UID.
 
         :param str uid: The UID
         '''
-        card = Card(uid)
+        tag = Tag(uid)
 
-        if card.registered:
-            LOGGER.info('Triggering action of registered card')
+        if tag.registered:
+            LOGGER.info('Triggering action of registered tag')
             play_sound('success.wav')
-            card(self.core)
+            tag(self.core)
 
         else:
-            LOGGER.info('Card is not registered, thus doing nothing')
+            LOGGER.info('Tag is not registered, thus doing nothing')
             play_sound('fail.wav')
 
-        card.scanned      = time()
-        CardReader.latest = card
+        tag.scanned      = time()
+        TagReader.latest = tag

@@ -5,20 +5,20 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="style.css" rel="stylesheet" type="text/css">
-        <title>Pummeluff Card Management</title>
+        <title>Pummeluff Tag Management</title>
     </head>
     <body>
         <header>
-            <h1>Pummeluff Card Management</h1>
+            <h1>Pummeluff Tag Management</h1>
         </header>
         <main>
             <div id="register">
-                <h2>Register New Card</h2>
+                <h2>Register New Tag</h2>
                 <div>
                     <form id="register-form">
                         <label for="uid">UID</label>
-                        <input id="uid" name="uid" type="text" placeholder="The unique card ID">
-                        <a id="read-rfid-card" href="#">Read UID from RFID card…</a>
+                        <input id="uid" name="uid" type="text" placeholder="The unique tag ID">
+                        <a id="read-rfid-tag" href="#">Read UID from RFID tag…</a>
                         <label for="alias">Alias</label>
                         <input id="alias" name="alias" type="text" placeholder="Your personal alias / identifier">
                         <label for="type">Type</label>
@@ -26,13 +26,13 @@
                         </select>
                         <label for="parameter">Parameter</label>
                         <input id="parameter" name="parameter" type="text" placeholder="A type-specific parameter">
-                        <button id="register-button" role="submit">✓ Register Card</button>
+                        <button id="register-button" role="submit">✓ Register Tag</button>
                     </form>
                 </div>
             </div>
             <div id="registry">
-                <h2>Registered Cards</h2>
-                <div id="cards"></div>
+                <h2>Registered Tags</h2>
+                <div id="tags"></div>
             </div>
         </main>
         <script src="script.js"></script>

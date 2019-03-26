@@ -35,6 +35,7 @@ class Tag(object):
     Base RFID tag class, which will implement the factory pattern in Python's
     own :py:meth:`__new__` method.
     '''
+    parameter_allowed = True
 
     def __new__(cls, uid):
         '''
@@ -149,7 +150,9 @@ class Tag(object):
                 'or use register() method of explicit tag classes.'
             raise InvalidTagType(error)
 
-        if hasattr(real_cls, 'validate_parameter'):
+        if not real_cls.parameter_allowed and parameter:
+            raise ValueError('No parameter allowed for this tag')
+        elif hasattr(real_cls, 'validate_parameter'):
             real_cls.validate_parameter(parameter)
 
         REGISTRY[uid] = {
@@ -229,18 +232,21 @@ class PlayPauseTag(Tag):
     '''
     Pauses or resumes the playback, based on the current state.
     '''
-    action = 'play_pause'
+    action            = 'play_pause'
+    parameter_allowed = False
 
 
 class StopTag(Tag):
     '''
     Stops the playback.
     '''
-    action = 'stop'
+    action            = 'stop'
+    parameter_allowed = False
 
 
 class ShutdownTag(Tag):
     '''
     Shutting down the system.
     '''
-    action = 'shutdown'
+    action            = 'shutdown'
+    parameter_allowed = False

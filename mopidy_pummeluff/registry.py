@@ -20,11 +20,11 @@ LOGGER = getLogger(__name__)
 
 class RegistryDict(dict):
     '''
-    Simple card registry based on Python's internal :py:class:`dict` class,
+    Simple tag registry based on Python's internal :py:class:`dict` class,
     which reads and writes the registry from/to disk.
     '''
 
-    registry_path = '/var/lib/mopidy/pummeluff/cards.json'
+    registry_path = '/var/lib/mopidy/pummeluff/tags.json'
 
     def __init__(self):
         super(RegistryDict, self).__init__(self)

@@ -1,15 +1,15 @@
 Mopidy Pummeluff
 ================
 
-Pummeluff is a `Mopidy <http://www.mopidy.com/>`_ extension which allows you to control Mopidy via RFID cards. It is as simple as that:
+Pummeluff is a `Mopidy <http://www.mopidy.com/>`_ extension which allows you to control Mopidy via RFID tags. It is as simple as that:
 
-- Register an action to an RFID card
-- Touch that card on the RFID reader and the action will be executed 
+- Register an action to an RFID tag
+- Touch that tag on the RFID reader and the action will be executed 
 
 Thus, the Mopidy Pummeluff extension adds the following features to Mopidy:
 
-- A radically simple web UI which can be used to manage the RFID cards
-- A daemon which continuously reads RFID cards in the background and executes the assigned actions
+- A radically simple web UI which can be used to manage the RFID tags
+- A daemon which continuously reads RFID tags in the background and executes the assigned actions
 
 There are several actions included, such as replacing the tracklist with a desired URI, setting the volume to a specific level or controlling the playback state.
 
@@ -19,11 +19,18 @@ Hardware
 Requirements
 ------------
 
-To get the whole thing working, you need the following hardware:
+To get the whole thing working, you need at least the following hardware:
 
 - A Raspberry Pi 3 Model B
-- An ``RC522`` RFID module (available on `AliExpress <https://www.aliexpress.com/wholesale?SearchText=rc522>`_ for approx. *USD 1*)
-- RFID cards, keyfobs or stickers (``ISO 14443A`` and ``Mifare`` should work)
+- An ``RC522`` RFID module (`RC522 on AliExpress <https://www.aliexpress.com/wholesale?SearchText=rc522>`_ for approx. *USD 1*)
+- RFID tags (``ISO 14443A`` & ``Mifare`` should work, `14443A tags on AliExpress <https://www.aliexpress.com/wholesale?SearchText=14443A+lot>`_ for approx. *0.4 USD* per tag)
+- Female dupont jumper wires (`female dupont jumper cables on AliExpress <https://www.aliexpress.com/wholesale?SearchText=dupont>`_ for approx. *1 USD*)
+
+Optionally you can also add two buttons to the RPi, which can be used for power & playback control:
+
+- Two momentary push buttons (`momentary push buttons on AliExpress <https://www.aliexpress.com/wholesale?SearchText=momentary+push+button>`_ for approx. *USD 1-2*) 
+
+Pummeluff also supports a status LED, which lights up when Pummeluff (i.e. Mopidy) is running. You can go with a separate LED, just make sure it can handle 3.3V or add a resistor. There are also push buttons with integrated LED's available, for example `these 5V momentary push buttons on AliExpress <https://www.aliexpress.com/item/16mm-Metal-brass-Push-Button-Switch-flat-round-illumination-ring-Latching-1NO-1NC-Car-press-button/32676526568.html>`_.
 
 .. note::
 
@@ -49,10 +56,20 @@ Please have a look at the `Raspberry Pi SPI pinout <https://pinout.xyz/pinout/sp
     
     This connections are only valid for the RPi model ``3B`` and ``3B+``. If you want to use another RPI model, make sure you're using the correct pins.
 
-.. important::
+Connecting the buttons (optional)
+---------------------------------
 
-    Some manuals in the internet mention that the ``IRQ`` pin shouldn't be connected.
-    However, Mopidy Pummeluff really uses the ``IRQ`` pin for the interrupt, so that less CPU cycles are used for the card reading daemon. If you don't connect the ``IRQ`` pin, Mopidy Pummeluff won't work!
+You can connect two buttons to the RPi:
+
+- ``RPi pin 5`` - Power button: Shutdown the Raspberry Pi into halt state & wake it up again from halt state
+- ``RPi pin 7`` - Playback button: Pause and resume the playback
+
+The buttons must shortcut their corresponding pins against ``GND`` (e.g. pin ``6``) when pressed. This means you want to connect one pin of the button (i.e. ``C``) to RPI's ``GND``, and the other one (i.e. ``NO``) to RPi's pin ``5`` or ``7``.
+
+Connecting the status LED (optional)
+------------------------------------
+
+If you want to have a status LED which is turned on when the RPi is running, you can connect an LED to a ``GND`` pin (e.g. pin ``6``) & to pin ``8``.
 
 Installation
 ============
@@ -60,7 +77,7 @@ Installation
 Prepare Raspberry Pi
 --------------------
 
-Before you can install and use Mopidy Pummeluff, you need to configure your Raspberry Pi.
+Before you can install and use Mopidy Pummeluff, you need to configure your Raspberry Pi properly.
 
 We want to enable the ``SPI`` interface and give the ``mopidy`` user access to it. This is required for the communication to the RFID module. Enter this command:
 
@@ -76,7 +93,7 @@ After that, add your ``mopidy`` user to the ``spi`` and ``gpio`` group:
 
     sudo usermod -a -G spi,gpio mopidy
 
-If you're planning to use a card to shutdown the system, you also need to create a sudo rule, so that the ``mopidy`` user can shutdown the system without a password prompt:
+If you're planning to use a button or RFID tag to shutdown the system, you also need to create a sudo rule, so that the ``mopidy`` user can shutdown the system without a password prompt:
 
 .. code-block:: bash
 
@@ -127,4 +144,4 @@ Usage
 =====
 
 Open the Mopidy Web UI (i.e. ``http://{MOPIDY_IP}:6680/``).
-You should see a ``pummeluff`` web client which can be used to regsiter new RFID cards.
+You should see a ``pummeluff`` web client which can be used to regsiter new RFID tags.

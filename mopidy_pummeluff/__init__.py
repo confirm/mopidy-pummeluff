@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 '''
 Mopidy Pummeluff Python module.
 '''

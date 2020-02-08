@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 '''
 Threads of Mopidy Pummeluff.
 '''

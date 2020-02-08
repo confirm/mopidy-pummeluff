@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 '''
 Python module for the dedicated Mopidy Pummeluff threads.
 '''

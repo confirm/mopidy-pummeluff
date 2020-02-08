@@ -37,7 +37,7 @@ class GPIOHandler(Thread):
         :param mopidy.core.Core core: The mopidy core instance
         :param threading.Event stop_event: The stop event
         '''
-        super(GPIOHandler, self).__init__()
+        super().__init__()
 
         self.core       = core
         self.stop_event = stop_event

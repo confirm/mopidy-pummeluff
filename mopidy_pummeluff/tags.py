@@ -38,13 +38,13 @@ class Tag(object):
         '''
         Implement factory pattern and return correct tag instance.
         '''
-        tag         = REGISTRY.get(uid, {})
-        new_cls      = cls.get_class(tag.get('type', ''))
+        tag     = REGISTRY.get(uid, {})
+        new_cls = cls.get_class(tag.get('type', ''))
 
         if cls is Tag and cls is not new_cls:
             instance = new_cls(uid=uid)
         else:
-            instance = super(Tag, cls).__new__(cls, uid=uid)
+            instance = super().__new__(cls, uid=uid)
 
         instance.registered = bool(tag)
         instance.alias      = tag.get('alias')

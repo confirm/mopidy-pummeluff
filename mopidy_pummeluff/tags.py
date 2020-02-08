@@ -3,8 +3,6 @@
 Python module for Mopidy Pummeluff tags.
 '''
 
-from __future__ import absolute_import, unicode_literals, print_function
-
 __all__ = (
     'Tag',
     'TracklistTag',

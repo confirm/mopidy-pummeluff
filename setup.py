@@ -3,8 +3,6 @@
 Setup script for Mopidy-Pummeluff module.
 '''
 
-from __future__ import absolute_import, unicode_literals, print_function
-
 from setuptools import setup, find_packages
 
 with open('requirements.txt') as f:

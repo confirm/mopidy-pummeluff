@@ -3,8 +3,6 @@
 Python module for Mopidy Pummeluff web classes.
 '''
 
-from __future__ import absolute_import, unicode_literals
-
 __all__ = (
     'LatestHandler',
     'RegistryHandler',

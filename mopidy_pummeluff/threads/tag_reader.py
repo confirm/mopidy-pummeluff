@@ -13,7 +13,8 @@ from logging import getLogger
 import RPi.GPIO as GPIO
 from pirc522 import RFID
 
-from mopidy_pummeluff.tags import Tag
+from mopidy_pummeluff.registry import REGISTRY
+from mopidy_pummeluff.tags.base import Tag
 from mopidy_pummeluff.sound import play_sound
 
 LOGGER = getLogger(__name__)
@@ -102,16 +103,15 @@ class TagReader(Thread):
 
         :param str uid: The UID
         '''
-        tag = Tag(uid)
-
-        if tag.registered:
+        try:
+            tag = REGISTRY[str(uid)]
             LOGGER.info('Triggering action of registered tag')
             play_sound('success.wav')
             tag(self.core)
 
-        else:
+        except KeyError:
             LOGGER.info('Tag is not registered, thus doing nothing')
             play_sound('fail.wav')
+            tag = Tag(uid=uid)
 
-        tag.scanned      = time()
         TagReader.latest = tag

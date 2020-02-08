@@ -27,7 +27,7 @@ class InvalidTagType(Exception):
     pass
 
 
-class Tag(object):
+class Tag:
     '''
     Base RFID tag class, which will implement the factory pattern in Python's
     own :py:meth:`__new__` method.

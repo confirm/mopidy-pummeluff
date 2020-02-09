@@ -40,12 +40,12 @@ class API {
                 let tagElement = document.createElement('div')
                 tagElement.setAttribute('class', 'tag')
 
-                let args = new Array('alias', 'uid', 'type', 'parameter')
+                let args = new Array('alias', 'uid', 'tag_class', 'parameter')
                 for(let arg of args)
                 {
                     let spanElement = document.createElement('span')
                     let value = tag[arg] ? tag[arg] : '-'
-                    spanElement.setAttribute('class', arg)
+                    spanElement.setAttribute('class', arg.replace('_', '-'))
                     spanElement.innerHTML = value
                     tagElement.appendChild(spanElement)
                 }
@@ -58,27 +58,27 @@ class API {
     }
 
     /*
-     * Refresh the tag types.
+     * Refresh the tags.
      */
 
-    refreshTypes()
+    refreshTagClasses()
     {
         let callback = function(response)
         {
-            let select = document.getElementById('type');
+            let select = document.getElementById('tag-class');
             while(select.firstChild)
                 select.removeChild(select.firstChild)
 
-            for(let type in response.types)
+            for(let tag_class in response.tag_classes)
             {
                 let option = document.createElement('option')
-                option.setAttribute('value', type)
-                option.innerHTML = type + ' (' + response.types[type] + ')'
+                option.setAttribute('value', tag_class)
+                option.innerHTML = tag_class + ' (' + response.tag_classes[tag_class] + ')'
                 select.appendChild(option)
             }
         }
 
-        this.request('/pummeluff/types/', false, callback)
+        this.request('/pummeluff/tag-classes/', false, callback)
     }
 
     /*
@@ -95,10 +95,10 @@ class API {
             if(response.success)
             {
                 api.refreshRegistry()
-                document.getElementById('uid').value        = ''
-                document.getElementById('alias').value      = ''
-                document.getElementById('parameter').value  = ''
-                document.getElementById('type').selectIndex = 0
+                document.getElementById('uid').value             = ''
+                document.getElementById('alias').value           = ''
+                document.getElementById('parameter').value       = ''
+                document.getElementById('tag-class').selectIndex = 0
             }
             else
             {
@@ -117,15 +117,15 @@ class API {
     {
         let latest_tag = undefined
 
-        let uid_field       = document.getElementById('uid')
-        let alias_field     = document.getElementById('alias')
-        let parameter_field = document.getElementById('parameter')
-        let type_select     = document.getElementById('type')
+        let uid_field        = document.getElementById('uid')
+        let alias_field      = document.getElementById('alias')
+        let parameter_field  = document.getElementById('parameter')
+        let tag_class_select = document.getElementById('tag-class')
 
-        uid_field.value         = ''
-        alias_field.value       = ''
-        parameter_field.value   = ''
-        type_select.selectIndex = 0
+        uid_field.value              = ''
+        alias_field.value            = ''
+        parameter_field.value        = ''
+        tag_class_select.selectIndex = 0
 
         let link            = document.getElementById('read-rfid-tag')
         link.classList.add('reading')
@@ -144,8 +144,8 @@ class API {
                     if(response.parameter)
                         parameter_field.value = response.parameter
 
-                    if(response.type)
-                        type_select.value = response.type
+                    if(response.tag_class)
+                        tag_class_select.value = response.tag_class
 
                     link.classList.remove('reading')
                 }
@@ -168,7 +168,7 @@ class API {
 api = new API()
 
 api.refreshRegistry();
-api.refreshTypes();
+api.refreshTagClasses();
 
 document.getElementById('register-form').onsubmit = function()
 {

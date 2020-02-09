@@ -6,6 +6,7 @@ __all__ = (
     'LatestHandler',
     'RegistryHandler',
     'RegisterHandler',
+    'TagClassesHandler',
 )
 
 from json import dumps
@@ -13,8 +14,9 @@ from logging import getLogger
 
 from tornado.web import RequestHandler
 
-from . import tags
-from .threads import TagReader
+from mopidy_pummeluff.registry import REGISTRY
+from mopidy_pummeluff.tags import TAGS
+from mopidy_pummeluff.threads import TagReader
 
 LOGGER = getLogger(__name__)
 
@@ -77,7 +79,7 @@ class RegistryHandler(RequestHandler):  # pylint: disable=abstract-method
         '''
         tags_list = []
 
-        for tag in tags.Tag.all().values():
+        for tag in REGISTRY.values():
             tags_list.append(tag.dict)
 
         data = {
@@ -108,11 +110,11 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
         Handle POST request.
         '''
         try:
-            tag = tags.Tag.register(
+            tag = REGISTRY.register(
+                tag_class=self.get_argument('tag-class'),
                 uid=self.get_argument('uid'),
                 alias=self.get_argument('alias', None),
-                parameter=self.get_argument('parameter'),
-                tag_type=self.get_argument('type')
+                parameter=self.get_argument('parameter', None),
             )
 
             data = {
@@ -139,9 +141,9 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
         self.post()
 
 
-class TypesHandler(RequestHandler):  # pylint: disable=abstract-method
+class TagClassesHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
-    Request handler which returns all tag types.
+    Request handler which returns all tag classes.
     '''
 
     def initialize(self, core):  # pylint: disable=arguments-differ
@@ -156,19 +158,10 @@ class TypesHandler(RequestHandler):  # pylint: disable=abstract-method
         '''
         Handle GET request.
         '''
-        types = {}
-
-        for cls_name in tags.__all__:
-            tag_cls = getattr(tags, cls_name)
-            if tag_cls is not tags.Tag:
-                tag_type        = tags.Tag.get_type(tag_cls)
-                tag_doc         = tag_cls.__doc__.strip().split('.')[0]
-                types[tag_type] = tag_doc
-
         data = {
             'success': True,
-            'message': 'Types successfully retreived',
-            'types': types
+            'message': 'Tag classes successfully retreived',
+            'tag_classes': TAGS
         }
 
         self.set_header('Content-type', 'application/json')

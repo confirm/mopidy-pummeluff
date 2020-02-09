@@ -25,7 +25,7 @@ def replace_tracklist(core, uri):
     '''
     LOGGER.info('Replacing tracklist with URI "%s"', uri)
     core.tracklist.clear()
-    core.tracklist.add(uri=uri)
+    core.tracklist.add(uris=[uri])
     core.playback.play()
 
 

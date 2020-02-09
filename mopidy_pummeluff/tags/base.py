@@ -55,7 +55,7 @@ class Tag:
         args = [core]
         if self.parameter:
             args.append(self.parameter)
-        self.action(*args)
+        self.action.__func__(*args)
 
     @property
     def dict(self):

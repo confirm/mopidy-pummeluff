@@ -61,11 +61,10 @@ class Tag:
     @property
     def action(self):
         '''
-        Return a name of an action (function) defined in the
+        Return an action function defined in the
         :py:mod:`mopidy_pummeluff.actions` Python module.
 
-        :return: An action name
-        :rtype: str
+        :return: An action
         :raises NotImplementedError: When action property isn't defined
         '''
         cls   = self.__class__.__name__
@@ -76,6 +75,11 @@ class Tag:
     def as_dict(self, include_scanned=False):
         '''
         Dict representation of the tag.
+
+        :param bool include_scanned: Include scanned timestamp
+
+        :return: The dict version of the tag
+        :rtype: dict
         '''
         data = {
             'tag_class': self.__class__.__name__,

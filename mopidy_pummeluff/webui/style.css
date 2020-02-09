@@ -117,8 +117,8 @@ button
 #read-rfid-tag
 {
     text-decoration: none;
-    color: #fa0;
-    font-size: 11px;
+    color          : #fa0;
+    font-size      : 11px;
 }
 
 #read-rfid-tag.reading {
@@ -144,13 +144,13 @@ div.tag
 }
 
 div.tag span.uid,
-div.tag span.type,
+div.tag span.tag-class,
 div.tag span.parameter
 {
     font-family: Courier New, monospace;
 }
 
-div.tag span.type
+div.tag span.tag-class
 {
     display         : inline-block;
     background-color: #888;

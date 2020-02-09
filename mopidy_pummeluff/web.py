@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
 '''
 Python module for Mopidy Pummeluff web classes.
 '''
-
-from __future__ import absolute_import, unicode_literals
 
 __all__ = (
     'LatestHandler',
     'RegistryHandler',
     'RegisterHandler',
+    'TagClassesHandler',
 )
 
 from json import dumps
@@ -16,8 +14,9 @@ from logging import getLogger
 
 from tornado.web import RequestHandler
 
-from . import tags
-from .threads import TagReader
+from mopidy_pummeluff.registry import REGISTRY
+from mopidy_pummeluff.tags import TAGS
+from mopidy_pummeluff.threads import TagReader
 
 LOGGER = getLogger(__name__)
 
@@ -33,9 +32,9 @@ class LatestHandler(RequestHandler):  # pylint: disable=abstract-method
 
         :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
-        self.core = core
+        self.core = core  # pylint: disable=attribute-defined-outside-init
 
-    def get(self, *args, **kwargs):
+    def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle GET request.
         '''
@@ -55,7 +54,7 @@ class LatestHandler(RequestHandler):  # pylint: disable=abstract-method
                 'message': 'Scanned tag found',
             }
 
-            data.update(tag.dict)
+            data.update(tag.as_dict(include_scanned=True))
 
         self.set_header('Content-type', 'application/json')
         self.write(dumps(data))
@@ -72,16 +71,16 @@ class RegistryHandler(RequestHandler):  # pylint: disable=abstract-method
 
         :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
-        self.core = core
+        self.core = core  # pylint: disable=attribute-defined-outside-init
 
-    def get(self, *args, **kwargs):
+    def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle GET request.
         '''
         tags_list = []
 
-        for tag in tags.Tag.all().values():
-            tags_list.append(tag.dict)
+        for tag in REGISTRY.values():
+            tags_list.append(tag.as_dict())
 
         data = {
             'success': True,
@@ -104,18 +103,18 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
 
         :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
-        self.core = core
+        self.core = core  # pylint: disable=attribute-defined-outside-init
 
-    def post(self, *args, **kwargs):
+    def post(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle POST request.
         '''
         try:
-            tag = tags.Tag.register(
+            tag = REGISTRY.register(
+                tag_class=self.get_argument('tag-class'),
                 uid=self.get_argument('uid'),
                 alias=self.get_argument('alias', None),
-                parameter=self.get_argument('parameter'),
-                tag_type=self.get_argument('type')
+                parameter=self.get_argument('parameter', None),
             )
 
             data = {
@@ -123,7 +122,7 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
                 'message': 'Tag successfully registered',
             }
 
-            data.update(tag.dict)
+            data.update(tag.as_dict())
 
         except ValueError as ex:
             self.set_status(400)
@@ -135,16 +134,16 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
         self.set_header('Content-type', 'application/json')
         self.write(dumps(data))
 
-    def put(self, *args, **kwargs):
+    def put(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle PUT request.
         '''
         self.post()
 
 
-class TypesHandler(RequestHandler):  # pylint: disable=abstract-method
+class TagClassesHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
-    Request handler which returns all tag types.
+    Request handler which returns all tag classes.
     '''
 
     def initialize(self, core):  # pylint: disable=arguments-differ
@@ -153,25 +152,16 @@ class TypesHandler(RequestHandler):  # pylint: disable=abstract-method
 
         :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
-        self.core = core
+        self.core = core  # pylint: disable=attribute-defined-outside-init
 
-    def get(self, *args, **kwargs):
+    def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle GET request.
         '''
-        types = {}
-
-        for cls_name in tags.__all__:
-            tag_cls = getattr(tags, cls_name)
-            if tag_cls is not tags.Tag:
-                tag_type        = tags.Tag.get_type(tag_cls)
-                tag_doc         = tag_cls.__doc__.strip().split('.')[0]
-                types[tag_type] = tag_doc
-
         data = {
             'success': True,
-            'message': 'Types successfully retreived',
-            'types': types
+            'message': 'Tag classes successfully retreived',
+            'tag_classes': TAGS
         }
 
         self.set_header('Content-type', 'application/json')

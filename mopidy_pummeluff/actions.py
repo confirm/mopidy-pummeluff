@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
 '''
 Python module for Mopidy Pummeluff actions.
 '''
-
-from __future__ import absolute_import, unicode_literals, print_function
 
 __all__ = (
     'replace_tracklist',
@@ -28,7 +25,7 @@ def replace_tracklist(core, uri):
     '''
     LOGGER.info('Replacing tracklist with URI "%s"', uri)
     core.tracklist.clear()
-    core.tracklist.add(uri=uri)
+    core.tracklist.add(uris=[uri])
     core.playback.play()
 
 

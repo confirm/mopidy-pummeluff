@@ -1,16 +1,13 @@
-# -*- coding: utf-8 -*-
 '''
 Mopidy Pummeluff Python module.
 '''
-
-from __future__ import absolute_import, unicode_literals
 
 import os
 
 import mopidy
 
 from .frontend import PummeluffFrontend
-from .web import LatestHandler, RegistryHandler, RegisterHandler, TypesHandler
+from .web import LatestHandler, RegistryHandler, RegisterHandler, TagClassesHandler
 
 
 def app_factory(config, core):  # pylint: disable=unused-argument
@@ -27,7 +24,7 @@ def app_factory(config, core):  # pylint: disable=unused-argument
         ('/latest/', LatestHandler, {'core': core}),
         ('/registry/', RegistryHandler, {'core': core}),
         ('/register/', RegisterHandler, {'core': core}),
-        ('/types/', TypesHandler, {'core': core}),
+        ('/tag-classes/', TagClassesHandler, {'core': core}),
     ]
 
 

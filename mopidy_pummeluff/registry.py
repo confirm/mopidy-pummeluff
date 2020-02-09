@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
 '''
 Python module for Mopidy Pummeluff registry.
 '''
-
-from __future__ import absolute_import, unicode_literals, print_function
 
 __all__ = (
     'RegistryDict',
@@ -14,46 +11,62 @@ import os
 import json
 from logging import getLogger
 
+from mopidy_pummeluff import tags
+
 
 LOGGER = getLogger(__name__)
 
 
 class RegistryDict(dict):
     '''
-    Simple tag registry based on Python's internal :py:class:`dict` class,
-    which reads and writes the registry from/to disk.
+    Class which can be used to retreive and write RFID tags to the registry.
     '''
 
     registry_path = '/var/lib/mopidy/pummeluff/tags.json'
 
     def __init__(self):
-        super(RegistryDict, self).__init__(self)
+        '''
+        Constructor.
+
+        Automatically reads the registry if it exists.
+        '''
+        super().__init__()
 
         if os.path.exists(self.registry_path):
             self.read()
         else:
             LOGGER.warning('Registry not existing yet on "%s"', self.registry_path)
 
-    def __getitem__(self, key):
-        return super(RegistryDict, self).__getitem__(str(key))
-
-    def __setitem__(self, key, item):
-        super(RegistryDict, self).__setitem__(str(key), item)
-        self.write()
-
-    def get(self, key, default=None):
+    @classmethod
+    def unserialize_item(cls, item):
         '''
-        Return the value for ``key`` if ``key`` is in the dictionary, else
-        ``default``.
+        Unserialize an item from the persistent storage on filesystem to a
+        native tag.
 
-        :param str key: The key
-        :param default: The default value
-        :type default: mixed
+        :param tuple item: The item
 
-        :return: The value
-        :rtype: mixed
+        :return: The tag
+        :rtype: tags.tag
         '''
-        return super(RegistryDict, self).get(str(key), default)
+        return item['uid'], cls.init_tag(**item)
+
+    @classmethod
+    def init_tag(cls, tag_class, uid, alias=None, parameter=None):
+        '''
+        Initialise a new tag instance.
+
+        :param str tag_class: The tag class
+        :param str uid: The RFID UID
+        :param str alias: The alias
+        :param str parameter: The parameter
+
+        :return: The tag instance
+        :rtype: tags.Tag
+        '''
+        uid       = str(uid).strip()
+        tag_class = getattr(tags, tag_class)
+
+        return tag_class(uid, alias, parameter)
 
     def read(self):
         '''
@@ -66,7 +79,7 @@ class RegistryDict(dict):
         with open(self.registry_path) as f:
             data = json.load(f)
             self.clear()
-            self.update(data)
+            self.update((self.unserialize_item(item) for item in data))
 
     def write(self):
         '''
@@ -81,7 +94,35 @@ class RegistryDict(dict):
             os.makedirs(directory)
 
         with open(config, 'w') as f:
-            json.dump(self, f, indent=4)
+            json.dump([tag.as_dict() for tag in self.values()], f, indent=4)
+
+    def register(self, tag_class, uid, alias=None, parameter=None):
+        '''
+        Register a new tag in the registry.
+
+        :param str tag_class: The tag class
+        :param str uid: The UID
+        :param str alias: The alias
+        :param str parameter: The parameter (optional)
+
+        :return: The tag
+        :rtype: tags.Tag
+        '''
+        LOGGER.info('Registering %s tag %s with parameter "%s"', tag_class, uid, parameter)
+
+        tag = self.init_tag(
+            tag_class=tag_class,
+            uid=uid,
+            alias=alias,
+            parameter=parameter
+        )
+
+        tag.validate()
+
+        self[uid] = tag
+        self.write()
+
+        return tag
 
 
 REGISTRY = RegistryDict()

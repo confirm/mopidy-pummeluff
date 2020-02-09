@@ -3,8 +3,6 @@
 Setup script for Mopidy-Pummeluff module.
 '''
 
-from __future__ import absolute_import, unicode_literals, print_function
-
 from setuptools import setup, find_packages
 
 with open('requirements.txt') as f:
@@ -19,6 +17,7 @@ setup(
     url='https://github.com/confirm/mopidy-pummeluff',
     license='MIT',
     author='confirm IT solutions',
+    author_email='mopidy-pummeluff@confirm.ch',
     description='Pummeluff is a Mopidy extension which allows you to control Mopidy via RFID tags',
     long_description=open('README.rst').read(),
     packages=find_packages(exclude=[
@@ -35,7 +34,7 @@ setup(
         'develop': requirements_dev,
     },
     entry_points={
-        b'mopidy.ext': [
+        'mopidy.ext': [
             'pummeluff = mopidy_pummeluff:Extension',
         ],
     },

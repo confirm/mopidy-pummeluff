@@ -25,6 +25,7 @@ class Tag:
         self.uid       = uid
         self.alias     = alias
         self.parameter = parameter
+        self.scanned   = None
 
     def __str__(self):
         '''
@@ -58,18 +59,6 @@ class Tag:
         self.action.__func__(*args)
 
     @property
-    def dict(self):
-        '''
-        Dict representation of the tag.
-        '''
-        return {
-            'tag_class': self.__class__.__name__,
-            'uid': self.uid,
-            'alias': self.alias or '',
-            'parameter': self.parameter or ''
-        }
-
-    @property
     def action(self):
         '''
         Return a name of an action (function) defined in the
@@ -83,6 +72,22 @@ class Tag:
         error = 'Missing action property in the %s class'
         LOGGER.error(error, cls)
         raise NotImplementedError(error % cls)
+
+    def as_dict(self, include_scanned=False):
+        '''
+        Dict representation of the tag.
+        '''
+        data = {
+            'tag_class': self.__class__.__name__,
+            'uid': self.uid,
+            'alias': self.alias or '',
+            'parameter': self.parameter or '',
+        }
+
+        if include_scanned:
+            data['scanned'] = self.scanned
+
+        return data
 
     def validate(self):
         '''

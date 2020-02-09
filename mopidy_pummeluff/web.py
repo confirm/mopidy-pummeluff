@@ -54,7 +54,7 @@ class LatestHandler(RequestHandler):  # pylint: disable=abstract-method
                 'message': 'Scanned tag found',
             }
 
-            data.update(tag.dict)
+            data.update(tag.as_dict(include_scanned=True))
 
         self.set_header('Content-type', 'application/json')
         self.write(dumps(data))
@@ -80,7 +80,7 @@ class RegistryHandler(RequestHandler):  # pylint: disable=abstract-method
         tags_list = []
 
         for tag in REGISTRY.values():
-            tags_list.append(tag.dict)
+            tags_list.append(tag.as_dict())
 
         data = {
             'success': True,
@@ -122,7 +122,7 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
                 'message': 'Tag successfully registered',
             }
 
-            data.update(tag.dict)
+            data.update(tag.as_dict())
 
         except ValueError as ex:
             self.set_status(400)

@@ -114,4 +114,5 @@ class TagReader(Thread):
             play_sound('fail.wav')
             tag = Tag(uid=uid)
 
+        tag.scanned      = time()
         TagReader.latest = tag

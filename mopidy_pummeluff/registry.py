@@ -94,7 +94,7 @@ class RegistryDict(dict):
             os.makedirs(directory)
 
         with open(config, 'w') as f:
-            json.dump([tag.dict for tag in self.values()], f, indent=4)
+            json.dump([tag.as_dict() for tag in self.values()], f, indent=4)
 
     def register(self, tag_class, uid, alias=None, parameter=None):
         '''

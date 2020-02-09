@@ -29,6 +29,6 @@ class Volume(Tag):
 
         try:
             number = int(self.parameter)
-            assert number >= 0 and number <= 100
+            assert 0 <= number <= 100
         except (ValueError, AssertionError):
             raise ValueError('Volume parameter has to be a number between 0 and 100')

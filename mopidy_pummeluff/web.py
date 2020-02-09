@@ -32,9 +32,9 @@ class LatestHandler(RequestHandler):  # pylint: disable=abstract-method
 
         :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
-        self.core = core
+        self.core = core  # pylint: disable=attribute-defined-outside-init
 
-    def get(self, *args, **kwargs):
+    def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle GET request.
         '''
@@ -71,9 +71,9 @@ class RegistryHandler(RequestHandler):  # pylint: disable=abstract-method
 
         :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
-        self.core = core
+        self.core = core  # pylint: disable=attribute-defined-outside-init
 
-    def get(self, *args, **kwargs):
+    def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle GET request.
         '''
@@ -103,9 +103,9 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
 
         :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
-        self.core = core
+        self.core = core  # pylint: disable=attribute-defined-outside-init
 
-    def post(self, *args, **kwargs):
+    def post(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle POST request.
         '''
@@ -134,7 +134,7 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
         self.set_header('Content-type', 'application/json')
         self.write(dumps(data))
 
-    def put(self, *args, **kwargs):
+    def put(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle PUT request.
         '''
@@ -152,9 +152,9 @@ class TagClassesHandler(RequestHandler):  # pylint: disable=abstract-method
 
         :param mopidy.core.Core mopidy_core: The mopidy core instance
         '''
-        self.core = core
+        self.core = core  # pylint: disable=attribute-defined-outside-init
 
-    def get(self, *args, **kwargs):
+    def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle GET request.
         '''

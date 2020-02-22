@@ -24,8 +24,16 @@ def replace_tracklist(core, uri):
     :param str uri: An URI for the tracklist replacement
     '''
     LOGGER.info('Replacing tracklist with URI "%s"', uri)
+
+    playlists = [playlist.uri for playlist in core.playlists.as_list().get()]
+
+    if uri in playlists:
+        uris = [item.uri for item in core.playlists.get_items(uri).get()]
+    else:
+        uris = [uri]
+
     core.tracklist.clear()
-    core.tracklist.add(uris=[uri])
+    core.tracklist.add(uris=uris)
     core.playback.play()
 
 

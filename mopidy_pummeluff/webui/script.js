@@ -170,6 +170,20 @@ api = new API()
 api.refreshRegistry();
 api.refreshTagClasses();
 
+document.addEventListener('click', function(event)
+{
+    let target = event.target
+    let div    = target.closest('div')
+
+    if(div && div.classList.contains('tag'))
+    {
+        for(let child of div.children)
+        {
+            document.getElementById(child.className).value = child.innerHTML.replace(/^-$/, '')
+        }
+    }
+})
+
 document.getElementById('register-form').onsubmit = function()
 {
     api.register()

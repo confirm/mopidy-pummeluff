@@ -1,22 +1,36 @@
 '''
-Python module for Mopidy Pummeluff base tag.
+Python module for Mopidy Pummeluff base action.
 '''
 
 __all__ = (
-    'Tag',
+    'Action',
 )
 
 from logging import getLogger
+from inspect import getfullargspec
 
 LOGGER = getLogger(__name__)
 
 
-class Tag:
+class Action:
     '''
     Base RFID tag class, which will implement the factory pattern in Python's
     own :py:meth:`__new__` method.
     '''
-    parameterised = True
+
+    @classmethod
+    def execute(cls, core):
+        '''
+        Execute the action.
+
+        :param mopidy.core.Core core: The mopidy core instance
+
+        :raises NotImplementedError: When class method is not implemented
+        '''
+        name  = cls.__name__
+        error = 'Missing execute class method in the %s class'
+        LOGGER.error(error, name)
+        raise NotImplementedError(error % name)
 
     def __init__(self, uid, alias=None, parameter=None):
         '''
@@ -56,21 +70,7 @@ class Tag:
         args = [core]
         if self.parameter:
             args.append(self.parameter)
-        self.action.__func__(*args)
-
-    @property
-    def action(self):
-        '''
-        Return an action function defined in the
-        :py:mod:`mopidy_pummeluff.actions` Python module.
-
-        :return: An action
-        :raises NotImplementedError: When action property isn't defined
-        '''
-        cls   = self.__class__.__name__
-        error = 'Missing action property in the %s class'
-        LOGGER.error(error, cls)
-        raise NotImplementedError(error % cls)
+        self.execute(*args)
 
     def as_dict(self, include_scanned=False):
         '''
@@ -99,8 +99,10 @@ class Tag:
 
         :raises ValueError: When parameter is not allowed but defined
         '''
-        if self.parameterised and not self.parameter:
+        parameterised = len(getfullargspec(self.execute).args) > 2
+
+        if parameterised and not self.parameter:
             raise ValueError('Parameter required for this tag')
 
-        if not self.parameterised and self.parameter:
+        if not parameterised and self.parameter:
             raise ValueError('No parameter allowed for this tag')

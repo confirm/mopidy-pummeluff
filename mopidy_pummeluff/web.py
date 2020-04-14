@@ -6,7 +6,7 @@ __all__ = (
     'LatestHandler',
     'RegistryHandler',
     'RegisterHandler',
-    'TagClassesHandler',
+    'ActionClassesHandler',
 )
 
 from json import dumps
@@ -15,7 +15,7 @@ from logging import getLogger
 from tornado.web import RequestHandler
 
 from mopidy_pummeluff.registry import REGISTRY
-from mopidy_pummeluff.tags import TAGS
+from mopidy_pummeluff.actions import ACTIONS
 from mopidy_pummeluff.threads import TagReader
 
 LOGGER = getLogger(__name__)
@@ -111,7 +111,7 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
         '''
         try:
             tag = REGISTRY.register(
-                tag_class=self.get_argument('tag-class'),
+                action_class=self.get_argument('action-class'),
                 uid=self.get_argument('uid'),
                 alias=self.get_argument('alias', None),
                 parameter=self.get_argument('parameter', None),
@@ -141,9 +141,9 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
         self.post()
 
 
-class TagClassesHandler(RequestHandler):  # pylint: disable=abstract-method
+class ActionClassesHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
-    Request handler which returns all tag classes.
+    Request handler which returns all action classes.
     '''
 
     def initialize(self, core):  # pylint: disable=arguments-differ
@@ -160,8 +160,8 @@ class TagClassesHandler(RequestHandler):  # pylint: disable=abstract-method
         '''
         data = {
             'success': True,
-            'message': 'Tag classes successfully retreived',
-            'tag_classes': TAGS
+            'message': 'Action classes successfully retreived',
+            'action_classes': ACTIONS
         }
 
         self.set_header('Content-type', 'application/json')

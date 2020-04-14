@@ -40,7 +40,7 @@ class API {
                 let tagElement = document.createElement('div')
                 tagElement.setAttribute('class', 'tag')
 
-                let args = new Array('alias', 'uid', 'tag_class', 'parameter')
+                let args = new Array('alias', 'uid', 'action_class', 'parameter')
                 for(let arg of args)
                 {
                     let spanElement = document.createElement('span')
@@ -61,24 +61,24 @@ class API {
      * Refresh the tags.
      */
 
-    refreshTagClasses()
+    refreshActionClasses()
     {
         let callback = function(response)
         {
-            let select = document.getElementById('tag-class');
+            let select = document.getElementById('action-class');
             while(select.firstChild)
                 select.removeChild(select.firstChild)
 
-            for(let tag_class in response.tag_classes)
+            for(let action_class in response.action_classes)
             {
                 let option = document.createElement('option')
-                option.setAttribute('value', tag_class)
-                option.innerHTML = tag_class + ' (' + response.tag_classes[tag_class] + ')'
+                option.setAttribute('value', action_class)
+                option.innerHTML = action_class + ' (' + response.action_classes[action_class] + ')'
                 select.appendChild(option)
             }
         }
 
-        this.request('/pummeluff/tag-classes/', false, callback)
+        this.request('/pummeluff/action-classes/', false, callback)
     }
 
     /*
@@ -98,7 +98,7 @@ class API {
                 document.getElementById('uid').value             = ''
                 document.getElementById('alias').value           = ''
                 document.getElementById('parameter').value       = ''
-                document.getElementById('tag-class').selectIndex = 0
+                document.getElementById('action-class').selectIndex = 0
             }
             else
             {
@@ -120,12 +120,12 @@ class API {
         let uid_field        = document.getElementById('uid')
         let alias_field      = document.getElementById('alias')
         let parameter_field  = document.getElementById('parameter')
-        let tag_class_select = document.getElementById('tag-class')
+        let action_class_select = document.getElementById('action-class')
 
         uid_field.value              = ''
         alias_field.value            = ''
         parameter_field.value        = ''
-        tag_class_select.selectIndex = 0
+        action_class_select.selectIndex = 0
 
         let link            = document.getElementById('read-rfid-tag')
         link.classList.add('reading')
@@ -144,8 +144,8 @@ class API {
                     if(response.parameter)
                         parameter_field.value = response.parameter
 
-                    if(response.tag_class)
-                        tag_class_select.value = response.tag_class
+                    if(response.action_class)
+                        action_class_select.value = response.action_class
 
                     link.classList.remove('reading')
                 }
@@ -168,7 +168,7 @@ class API {
 api = new API()
 
 api.refreshRegistry();
-api.refreshTagClasses();
+api.refreshActionClasses();
 
 document.addEventListener('click', function(event)
 {

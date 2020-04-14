@@ -25,7 +25,7 @@ class PummeluffFrontend(pykka.ThreadingActor, mopidy_core.CoreListener):
     '''
 
     def __init__(self, config, core):  # pylint: disable=unused-argument
-        super(PummeluffFrontend, self).__init__()
+        super().__init__()
         self.core         = core
         self.stop_event   = Event()
         self.gpio_handler = GPIOHandler(core=core, stop_event=self.stop_event)

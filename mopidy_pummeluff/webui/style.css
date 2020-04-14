@@ -145,13 +145,13 @@ div.tag
 }
 
 div.tag span.uid,
-div.tag span.tag-class,
+div.tag span.action-class,
 div.tag span.parameter
 {
     font-family: Courier New, monospace;
 }
 
-div.tag span.tag-class
+div.tag span.action-class
 {
     display         : inline-block;
     background-color: #888;

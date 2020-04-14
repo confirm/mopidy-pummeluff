@@ -6,16 +6,32 @@ __all__ = (
     'Volume',
 )
 
-from mopidy_pummeluff.actions import set_volume
-from .base import Tag
+from logging import getLogger
+
+from .base import Action
+
+LOGGER = getLogger(__name__)
 
 
-class Volume(Tag):
+class Volume(Action):
     '''
     Sets the volume to the percentage value retreived from the tag's parameter.
     '''
 
-    action = set_volume
+    @classmethod
+    def execute(cls, core, volume):  # pylint: disable=arguments-differ
+        '''
+        Set volume of the mixer.
+
+        :param mopidy.core.Core core: The mopidy core instance
+        :param volume: The new (percentage) volume
+        :type volume: int|str
+        '''
+        LOGGER.info('Setting volume to %s', volume)
+        try:
+            core.mixer.set_volume(int(volume))
+        except ValueError as ex:
+            LOGGER.error(str(ex))
 
     def validate(self):
         '''

@@ -7,7 +7,7 @@ import os
 import mopidy
 
 from .frontend import PummeluffFrontend
-from .web import LatestHandler, RegistryHandler, RegisterHandler, TagClassesHandler
+from .web import LatestHandler, RegistryHandler, RegisterHandler, ActionClassesHandler
 
 
 def app_factory(config, core):  # pylint: disable=unused-argument
@@ -24,7 +24,7 @@ def app_factory(config, core):  # pylint: disable=unused-argument
         ('/latest/', LatestHandler, {'core': core}),
         ('/registry/', RegistryHandler, {'core': core}),
         ('/register/', RegisterHandler, {'core': core}),
-        ('/tag-classes/', TagClassesHandler, {'core': core}),
+        ('/action-classes/', ActionClassesHandler, {'core': core}),
     ]
 
 

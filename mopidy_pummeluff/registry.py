@@ -11,7 +11,7 @@ import os
 import json
 from logging import getLogger
 
-from mopidy_pummeluff import tags
+from mopidy_pummeluff import actions
 
 
 LOGGER = getLogger(__name__)
@@ -41,32 +41,32 @@ class RegistryDict(dict):
     def unserialize_item(cls, item):
         '''
         Unserialize an item from the persistent storage on filesystem to a
-        native tag.
+        native action.
 
         :param tuple item: The item
 
-        :return: The tag
-        :rtype: tags.tag
+        :return: The action
+        :rtype: actions.Action
         '''
-        return item['uid'], cls.init_tag(**item)
+        return item['uid'], cls.init_action(**item)
 
     @classmethod
-    def init_tag(cls, tag_class, uid, alias=None, parameter=None):
+    def init_action(cls, action_class, uid, alias=None, parameter=None):
         '''
-        Initialise a new tag instance.
+        Initialise a new action instance.
 
-        :param str tag_class: The tag class
+        :param str action_class: The action class
         :param str uid: The RFID UID
         :param str alias: The alias
         :param str parameter: The parameter
 
-        :return: The tag instance
-        :rtype: tags.Tag
+        :return: The action instance
+        :rtype: actions.Action
         '''
-        uid       = str(uid).strip()
-        tag_class = getattr(tags, tag_class)
+        uid          = str(uid).strip()
+        action_class = getattr(actions, action_class)
 
-        return tag_class(uid, alias, parameter)
+        return action_class(uid, alias, parameter)
 
     def read(self):
         '''
@@ -94,35 +94,35 @@ class RegistryDict(dict):
             os.makedirs(directory)
 
         with open(config, 'w') as f:
-            json.dump([tag.as_dict() for tag in self.values()], f, indent=4)
+            json.dump([action.as_dict() for action in self.values()], f, indent=4)
 
-    def register(self, tag_class, uid, alias=None, parameter=None):
+    def register(self, action_class, uid, alias=None, parameter=None):
         '''
         Register a new tag in the registry.
 
-        :param str tag_class: The tag class
+        :param str action_class: The action class
         :param str uid: The UID
         :param str alias: The alias
         :param str parameter: The parameter (optional)
 
-        :return: The tag
-        :rtype: tags.Tag
+        :return: The action
+        :rtype: actions.Action
         '''
-        LOGGER.info('Registering %s tag %s with parameter "%s"', tag_class, uid, parameter)
+        LOGGER.info('Registering %s tag %s with parameter "%s"', action_class, uid, parameter)
 
-        tag = self.init_tag(
-            tag_class=tag_class,
+        action = self.init_action(
+            action_class=action_class,
             uid=uid,
             alias=alias,
             parameter=parameter
         )
 
-        tag.validate()
+        action.validate()
 
-        self[uid] = tag
+        self[uid] = action
         self.write()
 
-        return tag
+        return action
 
 
 REGISTRY = RegistryDict()

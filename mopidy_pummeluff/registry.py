@@ -48,6 +48,9 @@ class RegistryDict(dict):
         :return: The action
         :rtype: actions.Action
         '''
+        if 'tag_class' in item:
+            item['action_class'] = item.pop('tag_class')
+
         return item['uid'], cls.init_action(**item)
 
     @classmethod

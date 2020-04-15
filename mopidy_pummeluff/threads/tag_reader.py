@@ -14,7 +14,7 @@ import RPi.GPIO as GPIO
 from pirc522 import RFID
 
 from mopidy_pummeluff.registry import REGISTRY
-from mopidy_pummeluff.tags.base import Tag
+from mopidy_pummeluff.actions.base import Action
 from mopidy_pummeluff.sound import play_sound
 
 LOGGER = getLogger(__name__)
@@ -104,15 +104,15 @@ class TagReader(Thread):
         :param str uid: The UID
         '''
         try:
-            tag = REGISTRY[str(uid)]
+            action = REGISTRY[str(uid)]
             LOGGER.info('Triggering action of registered tag')
             play_sound('success.wav')
-            tag(self.core)
+            action(self.core)
 
         except KeyError:
             LOGGER.info('Tag is not registered, thus doing nothing')
             play_sound('fail.wav')
-            tag = Tag(uid=uid)
+            action = Action(uid=uid)
 
-        tag.scanned      = time()
-        TagReader.latest = tag
+        action.scanned   = time()
+        TagReader.latest = action

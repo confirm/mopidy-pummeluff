@@ -12,7 +12,7 @@ from time import time
 
 import RPi.GPIO as GPIO
 
-from mopidy_pummeluff.actions import shutdown, play_pause
+from mopidy_pummeluff.actions import Shutdown, PlayPause, Stop, PreviousTrack, NextTrack
 from mopidy_pummeluff.sound import play_sound
 
 LOGGER = getLogger(__name__)
@@ -24,8 +24,11 @@ class GPIOHandler(Thread):
     LED when it's started and then reacting to button presses.
     '''
     button_pins = {
-        5: shutdown,
-        7: play_pause,
+        5: Shutdown,
+        29: PlayPause,
+        31: Stop,
+        33: PreviousTrack,
+        35: NextTrack,
     }
 
     led_pin = 8
@@ -76,5 +79,5 @@ class GPIOHandler(Thread):
         if (GPIO.input(pin) == GPIO.LOW) and (now - before > 0.25):
             LOGGER.debug('Button at pin %s was pushed', pin)
             play_sound('success.wav')
-            self.button_pins[pin](self.core)
+            self.button_pins[pin].execute(self.core)
             self.timestamps[pin] = now

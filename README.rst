@@ -62,9 +62,12 @@ Connecting the buttons (optional)
 You can connect two buttons to the RPi:
 
 - ``RPi pin 5`` - Power button: Shutdown the Raspberry Pi into halt state & wake it up again from halt state
-- ``RPi pin 7`` - Playback button: Pause and resume the playback
+- ``RPi pin 29`` - Playback button: Pause and resume the playback
+- ``RPi pin 31`` - Stop button: Stops the playback
+- ``RPi pin 33`` - Previous button: Changes to the previous track in the playlist
+- ``RPi pin 35`` - Next button: Changes to the next track in the playlist
 
-The buttons must shortcut their corresponding pins against ``GND`` (e.g. pin ``6``) when pressed. This means you want to connect one pin of the button (i.e. ``C``) to RPI's ``GND``, and the other one (i.e. ``NO``) to RPi's pin ``5`` or ``7``.
+The buttons must shortcut their corresponding pins against ``GND`` (e.g. pin ``6``) when pressed. This means you want to connect one pin of the button (i.e. ``C``) to RPI's ``GND``, and the other one (i.e. ``NO``) to RPi's pin ``5``, ``29``, ``31``, ``33`` or ``35``.
 
 Connecting the status LED (optional)
 ------------------------------------

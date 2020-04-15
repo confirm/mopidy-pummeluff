@@ -127,5 +127,16 @@ class RegistryDict(dict):
 
         return action
 
+    def unregister(self, uid):
+        '''
+        Unregister a tag from the registry.
+
+        :param str uid: The UID
+        '''
+        LOGGER.info('Unregistering tag %s', uid)
+
+        del self[uid]
+        self.write()
+
 
 REGISTRY = RegistryDict()

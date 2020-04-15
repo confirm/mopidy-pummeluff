@@ -8,15 +8,13 @@ class API {
      * Send AJAX request to REST API endpoint.
      */
 
-    request(endpoint, data, callback)
-    {
+    request = (endpoint, data, callback) => {
         let init = {}
         if(data)
             init = { method: 'POST', body: data }
 
         fetch(endpoint, init)
-        .then(function(response)
-        {
+        .then((response) => {
             return response.json()
         })
         .then(callback)
@@ -27,24 +25,21 @@ class API {
      * Refresh the registry.
      */
 
-    refreshRegistry()
-    {
-        let callback = function(response)
-        {
+    refreshRegistry = () => {
+        let callback = (response) => {
             let tagsContainer = document.getElementById('tags')
-            while(tagsContainer.firstChild)
+            while(tagsContainer.firstChild) {
                 tagsContainer.removeChild(tagsContainer.firstChild)
+            }
 
-            for(let tag of response.tags)
-            {
+            for(let tag of response.tags) {
                 let tagElement = document.createElement('div')
                 tagElement.setAttribute('class', 'tag')
 
                 let args = new Array('alias', 'uid', 'action_class', 'parameter')
-                for(let arg of args)
-                {
+                for(let arg of args) {
                     let spanElement = document.createElement('span')
-                    let value = tag[arg] ? tag[arg] : '-'
+                    let value       = tag[arg] ? tag[arg] : '-'
                     spanElement.setAttribute('class', arg.replace('_', '-'))
                     spanElement.innerHTML = value
                     tagElement.appendChild(spanElement)
@@ -61,16 +56,13 @@ class API {
      * Refresh the tags.
      */
 
-    refreshActionClasses()
-    {
-        let callback = function(response)
-        {
+    refreshActionClasses = () => {
+        let callback = (response) => {
             let select = document.getElementById('action-class');
             while(select.firstChild)
                 select.removeChild(select.firstChild)
 
-            for(let action_class in response.action_classes)
-            {
+            for(let action_class in response.action_classes) {
                 let option = document.createElement('option')
                 option.setAttribute('value', action_class)
                 option.innerHTML = action_class + ' (' + response.action_classes[action_class] + ')'
@@ -82,44 +74,51 @@ class API {
     }
 
     /*
+     * Reset the form.
+     */
+
+    formCallback = (response) => {
+        if(response.success) {
+            this.refreshRegistry()
+            document.getElementById('uid').value                = ''
+            document.getElementById('alias').value              = ''
+            document.getElementById('parameter').value          = ''
+            document.getElementById('action-class').selectIndex = 0
+        } else {
+            window.alert(response.message)
+        }
+    }
+
+    /*
      * Register a new tag.
      */
 
-    register()
-    {
+    register = () => {
         let form = document.getElementById('register-form')
         let data = new FormData(form)
+        this.request('/pummeluff/register/', data, this.formCallback)
+    }
 
-        let callback = function(response)
-        {
-            if(response.success)
-            {
-                api.refreshRegistry()
-                document.getElementById('uid').value             = ''
-                document.getElementById('alias').value           = ''
-                document.getElementById('parameter').value       = ''
-                document.getElementById('action-class').selectIndex = 0
-            }
-            else
-            {
-                window.alert(response.message)
-            }
-        }
+    /*
+     * Unregister an existing tag.
+     */
 
-        this.request('/pummeluff/register/', data, callback)
+    unregister = () => {
+        let form = document.getElementById('register-form')
+        let data = new FormData(form)
+        this.request('/pummeluff/unregister/', data, this.formCallback)
     }
 
     /*
      * Get latest scanned tag.
      */
 
-    getLatestTag()
-    {
+    getLatestTag = () => {
         let latest_tag = undefined
 
-        let uid_field        = document.getElementById('uid')
-        let alias_field      = document.getElementById('alias')
-        let parameter_field  = document.getElementById('parameter')
+        let uid_field           = document.getElementById('uid')
+        let alias_field         = document.getElementById('alias')
+        let parameter_field     = document.getElementById('parameter')
         let action_class_select = document.getElementById('action-class')
 
         uid_field.value              = ''
@@ -127,15 +126,12 @@ class API {
         parameter_field.value        = ''
         action_class_select.selectIndex = 0
 
-        let link            = document.getElementById('read-rfid-tag')
+        let link = document.getElementById('read-rfid-tag')
         link.classList.add('reading')
 
-        let do_request = function()
-        {
-            let callback = function(response)
-            {
-                if(latest_tag && response.success && JSON.stringify(response) != JSON.stringify(latest_tag))
-                {
+        let do_request = () => {
+            let callback = (response) => {
+                if(latest_tag && response.success && JSON.stringify(response) != JSON.stringify(latest_tag)) {
                     uid_field.value = response.uid
 
                     if(response.alias)
@@ -148,9 +144,7 @@ class API {
                         action_class_select.value = response.action_class
 
                     link.classList.remove('reading')
-                }
-                else
-                {
+                } else {
                     setTimeout(() => do_request(), 1000)
                 }
 
@@ -167,27 +161,28 @@ class API {
 
 api = new API()
 
-api.refreshRegistry();
-api.refreshActionClasses();
+api.refreshRegistry()
+api.refreshActionClasses()
 
-document.addEventListener('click', function(event)
-{
+document.addEventListener('click', (event) => {
     let target = event.target
     let div    = target.closest('div')
 
-    if(div && div.classList.contains('tag'))
-    {
-        for(let child of div.children)
-        {
+    if(div && div.classList.contains('tag')) {
+        for(let child of div.children) {
             document.getElementById(child.className).value = child.innerHTML.replace(/^-$/, '')
         }
     }
 })
 
-document.getElementById('register-form').onsubmit = function()
-{
+document.getElementById('register-form').onsubmit = () => {
     api.register()
     return false;
+}
+
+document.getElementById('unregister-button').onclick = () => {
+    api.unregister()
+    return false
 }
 
 document.getElementById('read-rfid-tag').onclick = () => api.getLatestTag()

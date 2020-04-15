@@ -6,6 +6,7 @@ __all__ = (
     'LatestHandler',
     'RegistryHandler',
     'RegisterHandler',
+    'UnregisterHandler',
     'ActionClassesHandler',
 )
 
@@ -25,14 +26,6 @@ class LatestHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
     Request handler which returns the latest scanned tag.
     '''
-
-    def initialize(self, core):  # pylint: disable=arguments-differ
-        '''
-        Initialize request handler with Mopidy core.
-
-        :param mopidy.core.Core mopidy_core: The mopidy core instance
-        '''
-        self.core = core  # pylint: disable=attribute-defined-outside-init
 
     def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
@@ -65,14 +58,6 @@ class RegistryHandler(RequestHandler):  # pylint: disable=abstract-method
     Request handler which returns all registered tags.
     '''
 
-    def initialize(self, core):  # pylint: disable=arguments-differ
-        '''
-        Initialize request handler with Mopidy core.
-
-        :param mopidy.core.Core mopidy_core: The mopidy core instance
-        '''
-        self.core = core  # pylint: disable=attribute-defined-outside-init
-
     def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle GET request.
@@ -96,14 +81,6 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
     Request handler which registers an RFID tag in the registry.
     '''
-
-    def initialize(self, core):  # pylint: disable=arguments-differ
-        '''
-        Initialize request handler with Mopidy core.
-
-        :param mopidy.core.Core mopidy_core: The mopidy core instance
-        '''
-        self.core = core  # pylint: disable=attribute-defined-outside-init
 
     def post(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
@@ -141,18 +118,44 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
         self.post()
 
 
+class UnregisterHandler(RequestHandler):  # pylint: disable=abstract-method
+    '''
+    Request handler which unregisters an RFID tag from the registry.
+    '''
+
+    def post(self, *args, **kwargs):  # pylint: disable=unused-argument
+        '''
+        Handle POST request.
+        '''
+        try:
+            REGISTRY.unregister(uid=self.get_argument('uid'))
+
+            data = {
+                'success': True,
+                'message': 'Tag successfully unregistered',
+            }
+
+        except ValueError as ex:
+            self.set_status(400)
+            data = {
+                'success': False,
+                'message': str(ex)
+            }
+
+        self.set_header('Content-type', 'application/json')
+        self.write(dumps(data))
+
+    def put(self, *args, **kwargs):  # pylint: disable=unused-argument
+        '''
+        Handle PUT request.
+        '''
+        self.post()
+
+
 class ActionClassesHandler(RequestHandler):  # pylint: disable=abstract-method
     '''
     Request handler which returns all action classes.
     '''
-
-    def initialize(self, core):  # pylint: disable=arguments-differ
-        '''
-        Initialize request handler with Mopidy core.
-
-        :param mopidy.core.Core mopidy_core: The mopidy core instance
-        '''
-        self.core = core  # pylint: disable=attribute-defined-outside-init
 
     def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''

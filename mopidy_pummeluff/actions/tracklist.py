@@ -21,6 +21,23 @@ class Tracklist(Action):
     '''
 
     @classmethod
+    def _browse_uri(cls, core, uri):
+        '''
+        Searches all tracks in uri (if it is a directory) and sub directories.
+
+        :param mopidy.core.Core core: The mopidy core instance
+        :param str uri: the URI
+        '''
+        # try to browse it - maybe it is a directory
+        uris = []
+        for ref in core.library.browse(uri).get():
+            if ref.type == ref.TRACK:
+                uris.append(ref.uri)
+            elif ref.type == ref.DIRECTORY:
+                uris.extend(cls._browse_uri(core, ref.uri))
+        return uris
+
+    @classmethod
     def execute(cls, core, uri):  # pylint: disable=arguments-differ
         '''
         Replace tracklist and play.
@@ -35,7 +52,16 @@ class Tracklist(Action):
         if uri in playlists:
             uris = [item.uri for item in core.playlists.get_items(uri).get()]
         else:
-            uris = [uri]
+            # if uri points to a Directory, we have to call browse to get all
+            # the Tracks. Right now it is not possible to get the type of an
+            # URI. So we just try to browse uri and if it is not a directory
+            # this will return an empty list of uris.
+            uris = cls._browse_uri(core, uri)
+            if not uris:
+                # browse failed
+                uris = [uri]
+
+        LOGGER.info('uris: %s', uris)
 
         core.tracklist.clear()
         core.tracklist.add(uris=uris)

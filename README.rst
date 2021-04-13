@@ -152,4 +152,4 @@ You should see a ``pummeluff`` web client which can be used to regsiter new RFID
 Contribution
 ============
 
-Please follow [these development guidelines](https://development-guidelines.confirm.ch/) when contributing to this project.
+Please follow `these development guidelines <https://development-guidelines.confirm.ch/>`_ when contributing to this project.

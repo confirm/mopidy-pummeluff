@@ -4,6 +4,7 @@ Python module for Mopidy Pummeluff tracklist tag.
 
 __all__ = (
     'Tracklist',
+    'ToggleShuffle',
 )
 
 from logging import getLogger
@@ -39,3 +40,23 @@ class Tracklist(Action):
         core.tracklist.clear()
         core.tracklist.add(uris=uris)
         core.playback.play()
+
+
+class ToggleShuffle(Action):
+    '''
+    Toggles random mode
+    '''
+
+    @classmethod
+    def execute(cls, core):
+        '''
+        Toggle random mode.
+
+        :param mopidy.core.Core core: The mopidy core instance
+        '''
+
+        shuffle = core.tracklist.get_random().get()
+        shuffle = not shuffle
+        core.tracklist.set_random(shuffle)
+
+        LOGGER.info('Toggling shuffle mode [%s]', shuffle)

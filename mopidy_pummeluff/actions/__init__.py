@@ -9,12 +9,13 @@ __all__ = (
     'NextTrack',
     'Shutdown',
     'Tracklist',
+    'ToggleShuffle',
     'Volume',
 )
 
 from .playback import PlayPause, Stop, PreviousTrack, NextTrack
 from .shutdown import Shutdown
-from .tracklist import Tracklist
+from .tracklist import Tracklist, ToggleShuffle
 from .volume import Volume
 
 ACTIONS = {}

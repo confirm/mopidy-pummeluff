@@ -7,6 +7,7 @@ import os
 import mopidy
 
 from .frontend import PummeluffFrontend
+from .commands import PummeluffCommand
 from .web import LatestHandler, RegistryHandler, RegisterHandler, UnregisterHandler, \
     ActionClassesHandler
 
@@ -73,3 +74,9 @@ class Extension(mopidy.ext.Extension):
             'name': self.ext_name,
             'factory': app_factory,
         })
+
+    def get_command(self):
+        '''
+        Setup the CLI interface.
+        '''
+        return PummeluffCommand()

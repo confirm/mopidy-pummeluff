@@ -34,7 +34,7 @@ class Action:
 
     def __init__(self, uid, alias=None, parameter=None):
         '''
-        Concstructor.
+        Constructor.
         '''
         self.uid       = uid
         self.alias     = alias
@@ -106,3 +106,14 @@ class Action:
 
         if not parameterised and self.parameter:
             raise ValueError('No parameter allowed for this tag')
+
+class EmptyAction(Action):
+    '''
+    An action that represents nothing but an uuid.
+    '''
+
+    def __init__(self, uid, alias=None, parameter=None):
+        '''
+        Constructor.
+        '''
+        super().__init__(uid = uid, alias = alias, parameter = parameter)

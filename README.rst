@@ -26,10 +26,6 @@ To get the whole thing working, you need at least the following hardware:
 - RFID tags (``ISO 14443A`` & ``Mifare`` should work, `14443A tags on AliExpress <https://www.aliexpress.com/wholesale?SearchText=14443A+lot>`_ for approx. *0.4 USD* per tag)
 - Female dupont jumper wires (`female dupont jumper cables on AliExpress <https://www.aliexpress.com/wholesale?SearchText=dupont>`_ for approx. *1 USD*)
 
-Optionally you can also add two buttons to the RPi, which can be used for power & playback control:
-
-- Two momentary push buttons (`momentary push buttons on AliExpress <https://www.aliexpress.com/wholesale?SearchText=momentary+push+button>`_ for approx. *USD 1-2*) 
-
 Pummeluff also supports a status LED, which lights up when Pummeluff (i.e. Mopidy) is running. You can go with a separate LED, just make sure it can handle 3.3V or add a resistor. There are also push buttons with integrated LED's available, for example `these 5V momentary push buttons on AliExpress <https://www.aliexpress.com/item/16mm-Metal-brass-Push-Button-Switch-flat-round-illumination-ring-Latching-1NO-1NC-Car-press-button/32676526568.html>`_.
 
 .. note::
@@ -45,7 +41,7 @@ Please connect the ``RC522`` RFID module to the RPi as follows:
 - ``RC522 pin 2 [SCK ]`` ––– ``RPi pin 23 [SPI0 SCLK]``
 - ``RC522 pin 3 [MOSI]`` ––– ``RPi pin 19 [SPI0 MOSI]``
 - ``RC522 pin 4 [MISO]`` ––– ``RPi pin 21 [SPI0 MISO]``
-- ``RC522 pin 5 [IRQ ]`` ––– ``RPi pin 18 [ GPIO 24 ]``
+- ``RC522 pin 5 [IRQ ]`` ––– not used
 - ``RC522 pin 6 [GND ]`` ––– ``RPi pin 20 [   GND   ]``
 - ``RC522 pin 7 [RST ]`` ––– ``RPi pin 22 [ GPIO 25 ]``
 - ``RC522 pin 8 [3.3V]`` ––– ``RPi pin 17 [3.3V PWR ]``
@@ -55,19 +51,6 @@ Please have a look at the `Raspberry Pi SPI pinout <https://pinout.xyz/pinout/sp
 .. note::
     
     This connections are only valid for the RPi model ``3B`` and ``3B+``. If you want to use another RPI model, make sure you're using the correct pins.
-
-Connecting the buttons (optional)
----------------------------------
-
-You can connect two buttons to the RPi:
-
-- ``RPi pin 5`` - Power button: Shutdown the Raspberry Pi into halt state & wake it up again from halt state
-- ``RPi pin 29`` - Playback button: Pause and resume the playback
-- ``RPi pin 31`` - Stop button: Stops the playback
-- ``RPi pin 33`` - Previous button: Changes to the previous track in the playlist
-- ``RPi pin 35`` - Next button: Changes to the next track in the playlist
-
-The buttons must shortcut their corresponding pins against ``GND`` (e.g. pin ``6``) when pressed. This means you want to connect one pin of the button (i.e. ``C``) to RPI's ``GND``, and the other one (i.e. ``NO``) to RPi's pin ``5``, ``29``, ``31``, ``33`` or ``35``.
 
 Connecting the status LED (optional)
 ------------------------------------
@@ -96,12 +79,6 @@ After that, add your ``mopidy`` user to the ``spi`` and ``gpio`` group:
 
     sudo usermod -a -G spi,gpio mopidy
 
-If you're planning to use a button or RFID tag to shutdown the system, you also need to create a sudo rule, so that the ``mopidy`` user can shutdown the system without a password prompt:
-
-.. code-block:: bash
-
-    echo "mopidy ALL = NOPASSWD: /sbin/shutdown" > /etc/sudoers.d/mopidy
-
 Install via pip
 ---------------
 
@@ -113,7 +90,7 @@ The recommended way to install Mopidy Pummeluff by using ``pip`` and thus by exe
 
 .. hint::
 
-    If you get an error that ``spidev`` could not be found, run ``pip install spidev`` first. This is an issue related to the ``pi-rc522`` Pypi package.
+    If you get an error that ``spidev`` could not be found, run ``pip install spidev`` first.
 
 Install from source
 -------------------
@@ -130,7 +107,7 @@ Alternatively, you can also install Mopidy Pummeluff from source, by running thi
 
 .. hint::
 
-    If you get an error that ``spidev`` could not be found, run ``pip install spidev`` first. This is an issue related to the ``pi-rc522`` Pypi package.
+    If you get an error that ``spidev`` could not be found, run ``pip install spidev`` first.
 
 Configuration
 =============

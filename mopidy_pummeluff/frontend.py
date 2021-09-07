@@ -12,7 +12,7 @@ from logging import getLogger
 import pykka
 from mopidy import core as mopidy_core
 
-from .threads import GPIOHandler, TagReader
+from .threads import TagReader
 
 
 LOGGER = getLogger(__name__)
@@ -28,14 +28,13 @@ class PummeluffFrontend(pykka.ThreadingActor, mopidy_core.CoreListener):
         super().__init__()
         self.core         = core
         self.stop_event   = Event()
-        self.gpio_handler = GPIOHandler(core=core, stop_event=self.stop_event)
+
         self.tag_reader   = TagReader(core=core, stop_event=self.stop_event)
 
     def on_start(self):
         '''
         Start GPIO handler & tag reader threads.
         '''
-        self.gpio_handler.start()
         self.tag_reader.start()
 
     def on_stop(self):

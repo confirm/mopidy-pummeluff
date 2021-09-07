@@ -6,6 +6,9 @@ GPIO Button Handling Removed
 
 Support of handling GPIO Buttons has been removed as the used pins weren`t configurable and there are other mopidy extensions like https://pypi.org/project/mopidy-raspberry-gpio/ (configureable pins) for that purpose.
 
+RFID Library replaced
+----------------------------
+
 The originally used RFID Library was pi-rc522. This is abandoned and it is not working with a recent raspberry os. I replaced it with the mfrc522 library. This one is also abandoned but it still handles the simple read task which is required here properly.
 
 Mopidy Pummeluff

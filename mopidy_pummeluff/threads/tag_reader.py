@@ -60,11 +60,10 @@ class TagReader(Thread):
         prev_uid  = ''
 
         while not self.stop_event.is_set():
-            rfid.wait_for_tag()
+            uid, data = rfid.read()
 
             try:
                 now = time()
-                uid = self.read_uid()
 
                 if now - prev_time > 1 or uid != prev_uid:
                     LOGGER.info('Tag %s read', uid)

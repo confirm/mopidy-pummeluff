@@ -11,6 +11,9 @@ from .web import LatestHandler, RegistryHandler, RegisterHandler, UnregisterHand
     ActionClassesHandler
 
 
+__version__ = "2.2.0"
+
+
 def app_factory(config, core):  # pylint: disable=unused-argument
     '''
     App factory for the web apps.
@@ -37,6 +40,7 @@ class Extension(mopidy.ext.Extension):
 
     dist_name = 'Mopidy-Pummeluff'
     ext_name = 'pummeluff'
+    version = __version__
 
     def get_default_config(self):  # pylint: disable=no-self-use
         '''

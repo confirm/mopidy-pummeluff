@@ -11,7 +11,6 @@ from time import time
 from logging import getLogger
 
 import RPi.GPIO as GPIO
-# from pirc522 import RFID
 from mfrc522 import SimpleMFRC522
 
 from mopidy_pummeluff.registry import REGISTRY
@@ -62,40 +61,16 @@ class TagReader(Thread):
         while not self.stop_event.is_set():
             uid, data = rfid.read()
 
-            try:
-                now = time()
+            now = time()
 
-                if now - prev_time > 1 or uid != prev_uid:
-                    LOGGER.info('Tag %s read', uid)
-                    self.handle_uid(uid)
+            if now - prev_time > 1 or uid != prev_uid:
+                LOGGER.info('Tag %s read', uid)
+                self.handle_uid(uid)
 
-                prev_time = now
-                prev_uid  = uid
-
-            except ReadError:
-                pass
+            prev_time = now
+            prev_uid  = uid
 
         GPIO.cleanup()  # pylint: disable=no-member
-
-    def read_uid(self):
-        '''
-        Return the UID from the tag.
-
-        :return: The hex UID
-        :rtype: string
-        '''
-        rfid = self.rfid
-
-        uid, data = rfid.read()  # pylint: disable=unused-variable
-        # if error:
-        #     raise ReadError('Could not read tag')
-
-        # error, uid_chunks = rfid.anticoll()
-        # if error:
-        #     raise ReadError('Could not read UID')
-
-        # uid = '{0[0]:02X}{0[1]:02X}{0[2]:02X}{0[3]:02X}'.format(uid_chunks)  # pylint: disable=invalid-format-index
-        return uid
 
     def handle_uid(self, uid):
         '''

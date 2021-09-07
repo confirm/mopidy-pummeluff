@@ -11,7 +11,8 @@ from time import time
 from logging import getLogger
 
 import RPi.GPIO as GPIO
-from pirc522 import RFID
+# from pirc522 import RFID
+from mfrc522 import SimpleMFRC522
 
 from mopidy_pummeluff.registry import REGISTRY
 from mopidy_pummeluff.actions.base import Action
@@ -48,7 +49,7 @@ class TagReader(Thread):
         super().__init__()
         self.core       = core
         self.stop_event = stop_event
-        self.rfid       = RFID()
+        self.rfid       = SimpleMFRC522()
 
     def run(self):
         '''
@@ -86,15 +87,15 @@ class TagReader(Thread):
         '''
         rfid = self.rfid
 
-        error, data = rfid.request()  # pylint: disable=unused-variable
-        if error:
-            raise ReadError('Could not read tag')
+        uid, data = rfid.read()  # pylint: disable=unused-variable
+        # if error:
+        #     raise ReadError('Could not read tag')
 
-        error, uid_chunks = rfid.anticoll()
-        if error:
-            raise ReadError('Could not read UID')
+        # error, uid_chunks = rfid.anticoll()
+        # if error:
+        #     raise ReadError('Could not read UID')
 
-        uid = '{0[0]:02X}{0[1]:02X}{0[2]:02X}{0[3]:02X}'.format(uid_chunks)  # pylint: disable=invalid-format-index
+        # uid = '{0[0]:02X}{0[1]:02X}{0[2]:02X}{0[3]:02X}'.format(uid_chunks)  # pylint: disable=invalid-format-index
         return uid
 
     def handle_uid(self, uid):

@@ -11,7 +11,7 @@ from .web import LatestHandler, RegistryHandler, RegisterHandler, UnregisterHand
     ActionClassesHandler
 
 
-__version__ = pkg_resources.get_distribution('mopidy-pummeluff').version
+__version__ = pkg_resources.get_distribution('Mopidy-Pummeluff').version
 
 def app_factory(config, core):  # pylint: disable=unused-argument
     '''

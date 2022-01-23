@@ -109,11 +109,11 @@ The recommended way to install Mopidy Pummeluff by using ``pip`` and thus by exe
 
 .. code-block:: bash
 
-    sudo pip install mopidy-pummeluff
+    sudo python3 -m pip install mopidy-pummeluff
 
 .. hint::
 
-    If you get an error that ``spidev`` could not be found, run ``pip install spidev`` first. This is an issue related to the ``pi-rc522`` Pypi package.
+    If you get an error that ``spidev`` could not be found, run ``sudo python3 -m pip install spidev`` first. This is an issue related to the ``pi-rc522`` Pypi package.
 
 Install from source
 -------------------

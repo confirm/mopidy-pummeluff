@@ -3,13 +3,15 @@ Mopidy Pummeluff Python module.
 '''
 
 import os
-
+import pkg_resources
 import mopidy
 
 from .frontend import PummeluffFrontend
 from .web import LatestHandler, RegistryHandler, RegisterHandler, UnregisterHandler, \
     ActionClassesHandler
 
+
+__version__ = pkg_resources.get_distribution('Mopidy-Pummeluff').version
 
 def app_factory(config, core):  # pylint: disable=unused-argument
     '''
@@ -37,6 +39,7 @@ class Extension(mopidy.ext.Extension):
 
     dist_name = 'Mopidy-Pummeluff'
     ext_name = 'pummeluff'
+    version = __version__
 
     def get_default_config(self):  # pylint: disable=no-self-use
         '''

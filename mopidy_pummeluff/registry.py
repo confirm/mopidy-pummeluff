@@ -7,12 +7,11 @@ __all__ = (
     'REGISTRY',
 )
 
-import os
 import json
+import os
 from logging import getLogger
 
 from mopidy_pummeluff import actions
-
 
 LOGGER = getLogger(__name__)
 
@@ -48,17 +47,17 @@ class RegistryDict(dict):
         :return: The action
         :rtype: actions.Action
         '''
-        if 'tag_class' in item:
-            item['action_class'] = item.pop('tag_class')
+        if 'action_class' in item:
+            item['action'] = item.pop('action_class')
 
         return item['uid'], cls.init_action(**item)
 
     @classmethod
-    def init_action(cls, action_class, uid, alias=None, parameter=None):
+    def init_action(cls, action, uid, alias=None, parameter=None):
         '''
         Initialise a new action instance.
 
-        :param str action_class: The action class
+        :param str action: The action class
         :param str uid: The RFID UID
         :param str alias: The alias
         :param str parameter: The parameter
@@ -66,10 +65,10 @@ class RegistryDict(dict):
         :return: The action instance
         :rtype: actions.Action
         '''
-        uid          = str(uid).strip()
-        action_class = getattr(actions, action_class)
+        uid    = str(uid).strip()
+        action = getattr(actions, action)
 
-        return action_class(uid, alias, parameter)
+        return action(uid, alias, parameter)
 
     def read(self):
         '''
@@ -79,8 +78,8 @@ class RegistryDict(dict):
         '''
         LOGGER.debug('Reading registry from %s', self.registry_path)
 
-        with open(self.registry_path) as f:
-            data = json.load(f)
+        with open(self.registry_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
             self.clear()
             self.update((self.unserialize_item(item) for item in data))
 
@@ -96,44 +95,57 @@ class RegistryDict(dict):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        with open(config, 'w') as f:
-            json.dump([action.as_dict() for action in self.values()], f, indent=4)
+        with open(config, 'w', encoding='utf-8') as file:
+            json.dump([action.as_dict() for action in self.values()], file, indent=4)
 
-    def register(self, action_class, uid, alias=None, parameter=None):
+    def register(self, action, uid, alias=None, parameter=None):
         '''
         Register a new tag in the registry.
 
-        :param str action_class: The action class
+        :param str action: The action class
         :param str uid: The UID
         :param str alias: The alias
         :param str parameter: The parameter (optional)
 
-        :return: The action
+        :return: The action instance
         :rtype: actions.Action
-        '''
-        LOGGER.info('Registering %s tag %s with parameter "%s"', action_class, uid, parameter)
 
-        action = self.init_action(
-            action_class=action_class,
+        :raises ValueError: When UID is not defined
+        '''
+        LOGGER.info('Registering %s tag %s with parameter "%s"', action, uid, parameter)
+
+        if not uid:
+            raise ValueError('UID required to register a tag')
+
+        action_instance = self.init_action(
+            action=action,
             uid=uid,
             alias=alias,
             parameter=parameter
         )
 
-        action.validate()
+        action_instance.validate()
 
-        self[uid] = action
+        self[uid] = action_instance
         self.write()
 
-        return action
+        return action_instance
 
     def unregister(self, uid):
         '''
         Unregister a tag from the registry.
 
         :param str uid: The UID
+
+        :raises ValueError: When UID is not defined
         '''
+        if not uid:
+            raise ValueError('UID required to unregister a tag')
+
         LOGGER.info('Unregistering tag %s', uid)
+
+        if uid not in self:
+            raise ValueError('UID not registered')
 
         del self[uid]
         self.write()

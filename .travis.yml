@@ -8,12 +8,13 @@ install:
   - pip install spidev RPi.GPIO
 
   # Install package develop
-  - pip install -e .[develop]
+  - make develop-python
 
 script:
     # Code style checks.
-    - pycodestyle mopidy_pummeluff
-    - pylint mopidy_pummeluff
+    - make test-isort
+    - make test-pycodestyle
+    - make test-pylint
 
     # Build check.
-    - python setup.py build
+    - make build

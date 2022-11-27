@@ -18,7 +18,7 @@ LOGGER = getLogger(__name__)
 
 class PlayPause(Action):
     '''
-    Pauses or resumes the playback, based on the current state.
+    Pause or resume the playback.
     '''
 
     @classmethod
@@ -40,7 +40,7 @@ class PlayPause(Action):
 
 class Stop(Action):
     '''
-    Stops the playback.
+    Stop the playback.
     '''
 
     @classmethod
@@ -56,7 +56,7 @@ class Stop(Action):
 
 class PreviousTrack(Action):
     '''
-    Changes to the previous track.
+    Change to the previous track.
     '''
 
     @classmethod
@@ -72,7 +72,7 @@ class PreviousTrack(Action):
 
 class NextTrack(Action):
     '''
-    Changes to the next track.
+    Change to the next track.
     '''
 
     @classmethod

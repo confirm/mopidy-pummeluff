@@ -1,0 +1,7 @@
+isort
+mopidy
+pycodestyle
+pylint
+setuptools
+setuptools_scm
+wheel

@@ -16,7 +16,7 @@ LOGGER = getLogger(__name__)
 
 class Shutdown(Action):
     '''
-    Shutting down the system.
+    Shut down the system.
     '''
 
     @classmethod

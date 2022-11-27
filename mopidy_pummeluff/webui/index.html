@@ -5,38 +5,73 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="style.css" rel="stylesheet" type="text/css">
-        <title>Pummeluff Tag Management</title>
+        <title>Mopidy Pummeluff</title>
     </head>
+
     <body>
+
         <header>
-            <h1>Pummeluff Tag Management</h1>
+            Mopidy Pummeluff
         </header>
-        <main>
-            <div id="register">
-                <h2>Register New Tag</h2>
-                <div>
-                    <form id="register-form">
-                        <label for="uid">UID</label>
-                        <input id="uid" name="uid" type="text" placeholder="The unique tag ID">
-                        <a id="read-rfid-tag" href="#">Read UID from RFID tag…</a>
-                        <label for="alias">Alias</label>
-                        <input id="alias" name="alias" type="text" placeholder="Your personal alias / identifier">
-                        <label for="action-class">Class</label>
-                        <select id="action-class" name="action-class">
-                        </select>
-                        <label for="parameter">Parameter</label>
-                        <input id="parameter" name="parameter" type="text" placeholder="A type-specific parameter">
-                        <button id="register-button" role="submit">✓ Register Tag</button>
-                        <button id="unregister-button" role="button">× Unregister Tag</button>
-                    </form>
+
+        <section id="manage">
+            <div id="error" hidden></div>
+            <form>
+                <label for="uid">
+                    UID
+                </label>
+                <input id="uid" name="uid" type="text" placeholder="The unique tag ID">
+
+                <label for="alias">
+                    Alias
+                </label>
+                <input id="alias" name="alias" type="text" placeholder="Your personal alias / identifier">
+
+                <label for="action">
+                    Action
+                </label>
+                <select id="action" name="action"></select>
+                <template id="action-template">
+                    <option value="${action}">${action} – ${description}</option>
+                </template>
+
+                <label for="parameter">
+                    Parameter
+                </label>
+                <input id="parameter" name="parameter" type="text" placeholder="A type-specific parameter">
+
+                <div id="buttons">
+                    <button id="register" role="submit">✓ Register</button>
+                    <button id="unregister" role="submit">× Unregister</button>
                 </div>
-            </div>
-            <div id="registry">
-                <h2>Registered Tags</h2>
-                <div id="tags"></div>
-            </div>
-        </main>
+            </form>
+        </section>
+
+        <section id="tags">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Alias</th>
+                        <th>UID</th>
+                        <th>Action</th>
+                        <th>Parameter</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <template id="tag-template">
+                <tr>
+                    <td>${alias}</td>
+                    <td>${uid}</td>
+                    <td>${action}</td>
+                    <td>${parameter}</td>
+                </tr>
+            </template>
+        </section>
+
         <script src="script.js"></script>
+
     </body>
 
 </html>

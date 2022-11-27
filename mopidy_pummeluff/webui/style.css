@@ -1,181 +1,180 @@
+@import url('https://ci.confirm.ch/colours.css');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600&display=swap');
+
 /*
- * Main Elements
+ * Settings
  */
 
-*,
-*:before,
-*:after
-{
-    box-sizing: border-box;
+:root {
+    --spacing: 20px;
+    --background: linear-gradient(to bottom right, var(--cd-blue-10) 0%, var(--cd-blue-50) 100%);
+    --primary: var(--cd-blue-100);
+    --accent: var(--cd-blue-70);
+    --muted: var(--cd-blue-40);
 }
+
+/*
+ * Reset
+ */
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+}
+
+/*
+ * HTML & body
+ */
 
 html,
-body
-{
-    margin : 0;
-    padding: 0;
+body {
+    width: 100vw;
+    min-height: 100vh;
 }
 
-body
-{
-    background-color: #222;
-    color           : #eee;
-    font-family     : sans-serif;
-    font-size       : 14px;
-    min-height      : 100vh;
-}
-
-/*
- * Headings
- */
-
-h1,
-h2
-{
-    margin: 0 0 10px 0;
+body {
+    background: var(--background);
+    color: #fcfcfc;
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "manage tags";
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto 1fr;
+    width: 100%;
+    height: 100%;
+    gap: var(--spacing);
+    padding: var(--spacing);
 }
 
 /*
- * Structural page elements
+ * Header
  */
 
-main
-{
-    display: flex;
-}
-
-header
-{
-    padding: 20px 20px 10px 20px;
-}
-
-main > div
-{
-    padding: 20px;
+header {
+    font-size: 2rem;
+    font-weight: 200;
+    grid-area: header;
 }
 
 /*
- * Register Form
+ * Sections
  */
 
-form
-{
-    background-color: #333;
-    padding         : 20px;
-    width           : 250px;
+#manage {
+    grid-area: manage;
 }
 
-label
-{
+#tags {
+    grid-area: tags;
+}
+
+section {
+    background-color: rgba(0, 0, 0, 0.25);
+    width: 100%;
+    height: 100%;
+    padding: var(--spacing);
+}
+
+/*
+ * Form
+ */
+
+#error {
+    background-color: var(--cd-rose-60);
+    margin-bottom   : var(--spacing);
+    padding         : var(--spacing);
+}
+
+label {
     display: block;
-    margin : 10px 0 5px 0;
-}
-
-label:first-child
-{
-    margin-top: 0;
+    margin: calc(var(--spacing) / 2) 0;
 }
 
 input,
-select,
-button
-{
-    background-color: #222;
-    border          : 0;
-    border-color    : #333;
+select {
+    background-color: rgba(0, 0, 0, 0.25);
+    border-color    : transparent;
     border-style    : solid;
     border-width    : 0 0 2px 0;
-    color           : #eee;
-    outline         : none;
-    padding         : 10px;
-    width           : 100%;
-}
-
-select
-{
-    height: 35px;
+    color: var(--foreground);
+    outline: none;
+    padding: calc(var(--spacing) / 2);
+    width: 100%;
 }
 
 input::placeholder
 {
-    color: #666;
+    color: var(--accent);
+    font-style: italic;
 }
 
 input:focus
 {
-    border-bottom-color: #8ff;
+    border-bottom-color: var(--accent);
 }
 
-button
-{
-    color      : #eee;
-    cursor     : pointer;
-    font-weight: bold;
-    margin-top : 10px;
+button {
+    border: 0;
+    color: var(--primary);
 }
 
-button#register-button
-{
-    background-color: #4a4;
+button {
+    cursor: pointer;
+    font-weight: 600;
+    display: block;
+    padding: calc(var(--spacing) / 2);
+    width: 100%;
+    margin: var(--spacing) 0;
 }
 
-button#unregister-button
-{
-    background-color: #a20;
+#buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing);
 }
 
-#read-rfid-tag
-{
-    color          : #8ff;
-    font-size      : 11px;
-    text-decoration: none;
+#register {
+    background-color: var(--cd-sea-green-60);
 }
 
-#read-rfid-tag.reading {
-    animation: blink 0.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+#register:hover {
+    background-color: var(--cd-sea-green-70);
 }
 
-@keyframes blink { to { opacity: 0.25; } }
+#unregister {
+    background-color: var(--cd-rose-60);
+}
+
+#unregister:hover {
+    background-color: var(--cd-rose-70);
+}
 
 /*
- * Registered Tags
+ * Tags
  */
 
-div.tag
-{
-    background-color: #eee;
-    box-shadow      : 1px 1px 5px #000;
-    color           : #222;
-    cursor          : pointer;
-    display         : inline-block;
-    line-height     : 20px;
-    margin          : 0 20px 20px 0;
-    padding         : 10px;
-    width           : 400px;
+#tags table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-div.tag span.uid,
-div.tag span.action-class,
-div.tag span.parameter
-{
-    font-family: Courier New, monospace;
+#tags th,
+#tags td {
+    padding: calc(var(--spacing) / 2);
 }
 
-div.tag span.action-class
-{
-    background-color: #888;
-    border-radius   : 10px;
-    color           : #eee;
-    display         : inline-block;
-    font-size       : 11px;
-    line-height     : 11px;
-    margin-left     : 5px;
-    padding         : 3px 5px;
+#tags th {
+    border-bottom: 1px solid var(--muted);
+    text-align: left;
+    font-weight: 600;
 }
 
-div.tag span.alias,
-div.tag span.parameter
-{
-    display: block;
+#tags tbody tr:hover {
+    background-color: var(--muted);
+    cursor: pointer;
 }
-

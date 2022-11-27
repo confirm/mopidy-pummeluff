@@ -82,7 +82,7 @@ class Action:
         :rtype: dict
         '''
         data = {
-            'action_class': self.__class__.__name__,
+            'action': self.__class__.__name__,
             'uid': self.uid,
             'alias': self.alias or '',
             'parameter': self.parameter or '',

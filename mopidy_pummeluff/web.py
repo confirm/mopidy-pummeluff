@@ -7,7 +7,7 @@ __all__ = (
     'RegistryHandler',
     'RegisterHandler',
     'UnregisterHandler',
-    'ActionClassesHandler',
+    'ActionsHandler',
 )
 
 from json import dumps
@@ -97,7 +97,7 @@ class RegisterHandler(RequestHandler):  # pylint: disable=too-few-public-methods
         '''
         try:
             tag = REGISTRY.register(
-                action_class=self.get_argument('action-class'),
+                action=self.get_argument('action'),
                 uid=self.get_argument('uid'),
                 alias=self.get_argument('alias', None),
                 parameter=self.get_argument('parameter', None),
@@ -170,9 +170,9 @@ class UnregisterHandler(RequestHandler):  # pylint: disable=too-few-public-metho
         self.post()
 
 
-class ActionClassesHandler(RequestHandler):  # pylint: disable=too-few-public-methods,abstract-method
+class ActionsHandler(RequestHandler):  # pylint: disable=too-few-public-methods,abstract-method
     '''
-    Request handler which returns all action classes.
+    Request handler which returns all actions.
     '''
 
     def get(self, *args, **kwargs):  # pylint: disable=unused-argument
@@ -184,8 +184,8 @@ class ActionClassesHandler(RequestHandler):  # pylint: disable=too-few-public-me
         '''
         data = {
             'success': True,
-            'message': 'Action classes successfully retreived',
-            'action_classes': ACTIONS
+            'message': 'Actions successfully retreived',
+            'actions': ACTIONS
         }
 
         self.set_header('Content-type', 'application/json')

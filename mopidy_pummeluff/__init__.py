@@ -8,8 +8,7 @@ import mopidy
 import pkg_resources
 
 from .frontend import PummeluffFrontend
-from .web import ActionClassesHandler, LatestHandler, RegisterHandler, RegistryHandler, \
-    UnregisterHandler
+from .web import ActionsHandler, LatestHandler, RegisterHandler, RegistryHandler, UnregisterHandler
 
 __version__ = pkg_resources.get_distribution('Mopidy-Pummeluff').version
 
@@ -29,7 +28,7 @@ def app_factory(config, core):  # pylint: disable=unused-argument
         ('/registry/', RegistryHandler),
         ('/register/', RegisterHandler),
         ('/unregister/', UnregisterHandler),
-        ('/action-classes/', ActionClassesHandler),
+        ('/actions/', ActionsHandler),
     ]
 
 

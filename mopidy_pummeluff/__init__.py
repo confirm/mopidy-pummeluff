@@ -59,6 +59,9 @@ class Extension(mopidy.ext.Extension):
         :rtype: mopidy.config.schemas.ConfigSchema
         '''
         schema = super().get_config_schema()
+        for pin in ('led', 'shutdown', 'play_pause', 'stop', 'previous_track', 'next_track'):
+            schema[f'{pin}_pin'] = mopidy.config.Integer()
+
         return schema
 
     def setup(self, registry):

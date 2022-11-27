@@ -23,11 +23,12 @@ class PummeluffFrontend(pykka.ThreadingActor, mopidy_core.CoreListener):
     of RFID tags.
     '''
 
-    def __init__(self, config, core):  # pylint: disable=unused-argument
+    def __init__(self, config, core):
         super().__init__()
+        self.config       = config
         self.core         = core
         self.stop_event   = Event()
-        self.gpio_handler = GPIOHandler(core=core, stop_event=self.stop_event)
+        self.gpio_handler = GPIOHandler(core=core, config=config, stop_event=self.stop_event)
         self.tag_reader   = TagReader(core=core, stop_event=self.stop_event)
 
     def on_start(self):

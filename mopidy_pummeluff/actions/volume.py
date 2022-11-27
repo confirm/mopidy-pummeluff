@@ -37,8 +37,6 @@ class Volume(Action):
         '''
         Validates if the parameter is an integer between 0 and 100.
 
-        :param mixed parameter: The parameter
-
         :raises ValueError: When parameter is invalid
         '''
         super().validate()
@@ -46,5 +44,5 @@ class Volume(Action):
         try:
             number = int(self.parameter)
             assert 0 <= number <= 100
-        except (ValueError, AssertionError):
-            raise ValueError('Volume parameter has to be a number between 0 and 100')
+        except (ValueError, AssertionError) as ex:
+            raise ValueError('Volume parameter has to be a number between 0 and 100') from ex

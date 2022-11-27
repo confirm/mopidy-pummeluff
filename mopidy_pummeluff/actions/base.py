@@ -6,8 +6,8 @@ __all__ = (
     'Action',
 )
 
-from logging import getLogger
 from inspect import getfullargspec
+from logging import getLogger
 
 LOGGER = getLogger(__name__)
 
@@ -19,7 +19,7 @@ class Action:
     '''
 
     @classmethod
-    def execute(cls, core):
+    def execute(cls, core):  # pylint: disable=unused-argument
         '''
         Execute the action.
 

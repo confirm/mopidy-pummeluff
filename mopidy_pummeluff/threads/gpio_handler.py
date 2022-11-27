@@ -6,13 +6,13 @@ __all__ = (
     'GPIOHandler',
 )
 
-from threading import Thread
 from logging import getLogger
+from threading import Thread
 from time import time
 
-import RPi.GPIO as GPIO
+from RPi import GPIO  # pylint: disable=import-error
 
-from mopidy_pummeluff.actions import Shutdown, PlayPause, Stop, PreviousTrack, NextTrack
+from mopidy_pummeluff.actions import NextTrack, PlayPause, PreviousTrack, Shutdown, Stop
 from mopidy_pummeluff.sound import play_sound
 
 LOGGER = getLogger(__name__)

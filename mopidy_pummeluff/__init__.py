@@ -3,22 +3,23 @@ Mopidy Pummeluff Python module.
 '''
 
 import os
-import pkg_resources
+
 import mopidy
+import pkg_resources
 
 from .frontend import PummeluffFrontend
-from .web import LatestHandler, RegistryHandler, RegisterHandler, UnregisterHandler, \
-    ActionClassesHandler
-
+from .web import ActionClassesHandler, LatestHandler, RegisterHandler, RegistryHandler, \
+    UnregisterHandler
 
 __version__ = pkg_resources.get_distribution('Mopidy-Pummeluff').version
+
 
 def app_factory(config, core):  # pylint: disable=unused-argument
     '''
     App factory for the web apps.
 
     :param mopidy.config config: The mopidy config
-    :param mopidy.core.Core: The mopidy core
+    :param mopidy.core.Core core: The mopidy core
 
     :return: The registered app request handlers
     :rtype: list
@@ -46,6 +47,7 @@ class Extension(mopidy.ext.Extension):
         Return the default config.
 
         :return: The default config
+        :rtype: str
         '''
         conf_file = os.path.join(os.path.dirname(__file__), 'ext.conf')
         return mopidy.config.read(conf_file)
@@ -55,15 +57,16 @@ class Extension(mopidy.ext.Extension):
         Return the config schema.
 
         :return: The config schema
+        :rtype: mopidy.config.schemas.ConfigSchema
         '''
-        schema = super(Extension, self).get_config_schema()
+        schema = super().get_config_schema()
         return schema
 
     def setup(self, registry):
         '''
         Setup the extension.
 
-        :param mopidy.ext.Registry: The mopidy registry
+        :param mopidy.ext.Registry registry: The mopidy registry
         '''
         registry.add('frontend', PummeluffFrontend)
 

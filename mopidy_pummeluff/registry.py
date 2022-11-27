@@ -7,12 +7,11 @@ __all__ = (
     'REGISTRY',
 )
 
-import os
 import json
+import os
 from logging import getLogger
 
 from mopidy_pummeluff import actions
-
 
 LOGGER = getLogger(__name__)
 
@@ -79,8 +78,8 @@ class RegistryDict(dict):
         '''
         LOGGER.debug('Reading registry from %s', self.registry_path)
 
-        with open(self.registry_path) as f:
-            data = json.load(f)
+        with open(self.registry_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
             self.clear()
             self.update((self.unserialize_item(item) for item in data))
 
@@ -96,8 +95,8 @@ class RegistryDict(dict):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        with open(config, 'w') as f:
-            json.dump([action.as_dict() for action in self.values()], f, indent=4)
+        with open(config, 'w', encoding='utf-8') as file:
+            json.dump([action.as_dict() for action in self.values()], file, indent=4)
 
     def register(self, action_class, uid, alias=None, parameter=None):
         '''

@@ -6,14 +6,13 @@ __all__ = (
     'PummeluffFrontend',
 )
 
-from threading import Event
 from logging import getLogger
+from threading import Event
 
 import pykka
 from mopidy import core as mopidy_core
 
 from .threads import GPIOHandler, TagReader
-
 
 LOGGER = getLogger(__name__)
 

@@ -109,8 +109,13 @@ class RegistryDict(dict):
 
         :return: The action instance
         :rtype: actions.Action
+
+        :raises ValueError: When UID is not defined
         '''
         LOGGER.info('Registering %s tag %s with parameter "%s"', action, uid, parameter)
+
+        if not uid:
+            raise ValueError('UID required to register a tag')
 
         action_instance = self.init_action(
             action=action,
@@ -131,8 +136,16 @@ class RegistryDict(dict):
         Unregister a tag from the registry.
 
         :param str uid: The UID
+
+        :raises ValueError: When UID is not defined
         '''
+        if not uid:
+            raise ValueError('UID required to unregister a tag')
+
         LOGGER.info('Unregistering tag %s', uid)
+
+        if uid not in self:
+            raise ValueError('UID not registered')
 
         del self[uid]
         self.write()

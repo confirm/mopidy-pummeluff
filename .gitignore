@@ -1,9 +1,25 @@
-.venv/
-
-__pycache__/
-*.pyc
-
+# Build directory.
 build/
 dist/
 *.egg-info/
 .eggs/
+
+# Python cache files.
+__pycache__/
+
+# Python venv.
+.venv/
+
+# Node / NPM packages.
+node_modules/
+package-lock.json
+
+# Testing configs.
+.isort.cfg
+tox.ini
+.pylintrc
+.eslintrc.yml
+.stylelintrc.yml
+
+# macOS.
+.DS_Store

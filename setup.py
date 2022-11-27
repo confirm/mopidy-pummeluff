@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 with open('requirements.txt') as f:
     requirements = f.read().strip().split('\n')
 
-with open('requirements_dev.txt') as f:
+with open('requirements-dev.txt') as f:
     requirements_dev = f.read().strip().split('\n')
 
 setup(

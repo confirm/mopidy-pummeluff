@@ -15,7 +15,7 @@ LOGGER = getLogger(__name__)
 
 class Volume(Action):
     '''
-    Sets the volume to the percentage value retreived from the tag's parameter.
+    Set the volume to the percentage value from the tag's parameter.
     '''
 
     @classmethod

@@ -8,6 +8,7 @@ import mopidy
 import pkg_resources
 
 from .frontend import PummeluffFrontend
+from .commands import PummeluffCommand
 from .web import ActionsHandler, LatestHandler, RegisterHandler, RegistryHandler, UnregisterHandler
 
 __version__ = pkg_resources.get_distribution('Mopidy-Pummeluff').version
@@ -81,3 +82,9 @@ class Extension(mopidy.ext.Extension):
             'name': self.ext_name,
             'factory': app_factory,
         })
+
+    def get_command(self):
+        '''
+        Setup the CLI interface.
+        '''
+        return PummeluffCommand()

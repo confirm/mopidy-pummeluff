@@ -164,6 +164,12 @@ Usage
 Open the Mopidy Web UI (i.e. ``http://{MOPIDY_IP}:6680/``).
 You should see a ``pummeluff`` web client which can be used to regsiter new RFID tags.
 
+## Command line interface
+
+You can also access pummeluff through the command line interface. Write `mopidy pummeluff [COMMAND]` with available commands:
+
+* `list`: Lists all the registered tags with the alias, action and parameter.
+
 Contribution
 ============
 

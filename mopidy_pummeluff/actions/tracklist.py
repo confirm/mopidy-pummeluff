@@ -16,8 +16,7 @@ LOGGER = getLogger(__name__)
 
 class Tracklist(Action):
     '''
-    Replaces the current tracklist with the URI retreived from the tag's
-    parameter.
+    Replace the tracklist with the URI of the tag's parameter.
     '''
 
     @classmethod
@@ -44,7 +43,7 @@ class Tracklist(Action):
 
 class ToggleShuffle(Action):
     '''
-    Toggles random mode
+    Toggle random mode.
     '''
 
     @classmethod

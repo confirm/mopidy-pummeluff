@@ -6,15 +6,16 @@ __all__ = (
     'TagReader',
 )
 
+from logging import getLogger
 from threading import Thread
 from time import time
-from logging import getLogger
 
-import RPi.GPIO as GPIO
-from pirc522 import RFID
+from pirc522 import RFID  # pylint: disable=import-error
+from RPi import GPIO  # pylint: disable=import-error
 
-from mopidy_pummeluff.registry import REGISTRY
 from mopidy_pummeluff.actions.base import EmptyAction
+from mopidy_pummeluff.actions.base import Action
+from mopidy_pummeluff.registry import REGISTRY
 from mopidy_pummeluff.sound import play_sound
 
 LOGGER = getLogger(__name__)
@@ -62,18 +63,17 @@ class TagReader(Thread):
             rfid.wait_for_tag()
 
             try:
-                now = time()
                 uid = self.read_uid()
-
-                if now - prev_time > 1 or uid != prev_uid:
-                    LOGGER.info('Tag %s read', uid)
-                    self.handle_uid(uid)
-
-                prev_time = now
-                prev_uid  = uid
-
             except ReadError:
-                pass
+                continue
+
+            now = time()
+            if now - prev_time > 1 or uid != prev_uid:
+                LOGGER.info('Tag %s read', uid)
+                self.handle_uid(uid)
+
+            prev_time = now
+            prev_uid  = uid
 
         GPIO.cleanup()  # pylint: disable=no-member
 
@@ -83,6 +83,8 @@ class TagReader(Thread):
 
         :return: The hex UID
         :rtype: string
+
+        :raises ReadError: When RFID tag couldn't be read
         '''
         rfid = self.rfid
 
@@ -94,8 +96,7 @@ class TagReader(Thread):
         if error:
             raise ReadError('Could not read UID')
 
-        uid = '{0[0]:02X}{0[1]:02X}{0[2]:02X}{0[3]:02X}'.format(uid_chunks)  # pylint: disable=invalid-format-index
-        return uid
+        return ''.join([f'{chunk:X}' for chunk in uid_chunks[0:4]])
 
     def handle_uid(self, uid):
         '''

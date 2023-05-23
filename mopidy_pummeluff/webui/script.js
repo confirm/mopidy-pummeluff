@@ -1,188 +1,135 @@
 /*
- * API class which communicates with the Pummeluff REST API.
+ * Settings / constants.
  */
 
-class API {
+const defaultAction = 'Tracklist'
+let latestTag       = null
 
-    /*
-     * Send AJAX request to REST API endpoint.
-     */
 
-    request = (endpoint, data, callback) => {
-        let init = {}
-        if(data)
-            init = { method: 'POST', body: data }
+/**
+ * Evaluate code with a clean context.
+ */
 
-        fetch(endpoint, init)
-        .then((response) => {
-            return response.json()
-        })
-        .then(callback)
+const cleanContextEval = (code, context) => new Function(  // eslint-disable-line no-new-func
+    ...Object.keys(context),    // Function arguments
+    code,                       // Function body
+)(...Object.values(context))    // Call w/ arguments
 
-    }
+/**
+ * Render a HTML <template> tag found in the HTML DOM#.
+ */
 
-    /*
-     * Refresh the registry.
-     */
-
-    refreshRegistry = () => {
-        let callback = (response) => {
-            let tagsContainer = document.getElementById('tags')
-            while(tagsContainer.firstChild) {
-                tagsContainer.removeChild(tagsContainer.firstChild)
-            }
-
-            for(let tag of response.tags) {
-                let tagElement = document.createElement('div')
-                tagElement.setAttribute('class', 'tag')
-
-                let args = new Array('alias', 'uid', 'action_class', 'parameter')
-                for(let arg of args) {
-                    let spanElement = document.createElement('span')
-                    let value       = tag[arg] ? tag[arg] : '-'
-                    spanElement.setAttribute('class', arg.replace('_', '-'))
-                    spanElement.innerHTML = value
-                    tagElement.appendChild(spanElement)
-                }
-
-                tagsContainer.appendChild(tagElement)
-            }
-        }
-
-        this.request('/pummeluff/registry/', false, callback)
-    }
-
-    /*
-     * Refresh the tags.
-     */
-
-    refreshActionClasses = () => {
-        let callback = (response) => {
-            let select = document.getElementById('action-class');
-            while(select.firstChild)
-                select.removeChild(select.firstChild)
-
-            for(let action_class in response.action_classes) {
-                let option = document.createElement('option')
-                option.setAttribute('value', action_class)
-                option.innerHTML = action_class + ' (' + response.action_classes[action_class] + ')'
-                select.appendChild(option)
-            }
-        }
-
-        this.request('/pummeluff/action-classes/', false, callback)
-    }
-
-    /*
-     * Reset the form.
-     */
-
-    formCallback = (response) => {
-        if(response.success) {
-            this.refreshRegistry()
-            document.getElementById('uid').value                = ''
-            document.getElementById('alias').value              = ''
-            document.getElementById('parameter').value          = ''
-            document.getElementById('action-class').selectIndex = 0
-        } else {
-            window.alert(response.message)
-        }
-    }
-
-    /*
-     * Register a new tag.
-     */
-
-    register = () => {
-        let form = document.getElementById('register-form')
-        let data = new FormData(form)
-        this.request('/pummeluff/register/', data, this.formCallback)
-    }
-
-    /*
-     * Unregister an existing tag.
-     */
-
-    unregister = () => {
-        let form = document.getElementById('register-form')
-        let data = new FormData(form)
-        this.request('/pummeluff/unregister/', data, this.formCallback)
-    }
-
-    /*
-     * Get latest scanned tag.
-     */
-
-    getLatestTag = () => {
-        let latest_tag = undefined
-
-        let uid_field           = document.getElementById('uid')
-        let alias_field         = document.getElementById('alias')
-        let parameter_field     = document.getElementById('parameter')
-        let action_class_select = document.getElementById('action-class')
-
-        uid_field.value              = ''
-        alias_field.value            = ''
-        parameter_field.value        = ''
-        action_class_select.selectIndex = 0
-
-        let link = document.getElementById('read-rfid-tag')
-        link.classList.add('reading')
-
-        let do_request = () => {
-            let callback = (response) => {
-                if(latest_tag && response.success && JSON.stringify(response) != JSON.stringify(latest_tag)) {
-                    uid_field.value = response.uid
-
-                    if(response.alias)
-                        alias_field.value = response.alias
-
-                    if(response.parameter)
-                        parameter_field.value = response.parameter
-
-                    if(response.action_class)
-                        action_class_select.value = response.action_class
-
-                    link.classList.remove('reading')
-                } else {
-                    setTimeout(() => do_request(), 1000)
-                }
-
-                latest_tag = response
-            }
-
-            api.request('/pummeluff/latest/', false, callback)
-        }
-
-        do_request()
-    }
-
+const renderTemplate = (id, context) => {
+    const template     = document.querySelector(`template#${id}`).cloneNode(true)
+    template.innerHTML = cleanContextEval(`return \`${template.innerHTML.trim()}\``, context)
+    return template.content
 }
 
-api = new API()
+/**
+ * Send an API request.
+ */
 
-api.refreshRegistry()
-api.refreshActionClasses()
+const requestApi = (endpoint, data) => {
+    let options = {}
 
-document.addEventListener('click', (event) => {
-    let target = event.target
-    let div    = target.closest('div')
-
-    if(div && div.classList.contains('tag')) {
-        for(let child of div.children) {
-            document.getElementById(child.className).value = child.innerHTML.replace(/^-$/, '')
+    if(data) {
+        options = {
+            'body': data,
+            'method': 'POST',
         }
     }
+
+    return fetch(endpoint, options)
+        .then(response => response.json())
+}
+
+/**
+ * Refresh the registry.
+ */
+
+const refreshActionClasses = () => {
+    requestApi('/pummeluff/actions/').then(response => {
+        const select = document.getElementById('action')
+        select.options.length = 0
+        for(const [action, description] of Object.entries(response.actions))
+            select.appendChild(renderTemplate('action-template', {action, description}))
+        select.value = defaultAction
+    })
+}
+
+/**
+ * Refresh the registry.
+ */
+
+const refreshRegistry = () => {
+    requestApi('/pummeluff/registry/').then(response => {
+        const tbody = document.querySelector('#tags tbody')
+        tbody.innerHTML = ''
+        for(const tag of response.tags)
+            tbody.appendChild(renderTemplate('tag-template', tag))
+    })
+}
+
+/**
+ * Callback to read the latest tag.
+ */
+
+const readTag = () => {
+    requestApi('/pummeluff/latest/').then(response => {
+        const {uid, alias, parameter, action, success, scanned} = response
+
+        if(!latestTag)
+            latestTag = response
+
+        if(!success || (success && scanned === latestTag.scanned))
+            return
+
+        document.getElementById('uid').value       = uid
+        document.getElementById('alias').value     = alias ? alias : ''
+        document.getElementById('parameter').value = parameter ? parameter : ''
+        document.getElementById('action').value    = action !== 'Action' ? action : defaultAction
+
+        latestTag = response
+    })
+}
+
+/**
+ * Submit form.
+ */
+
+const submitForm = event => {
+    event.preventDefault()
+
+    const data = new FormData(event.target)
+
+    requestApi(`/pummeluff/${event.submitter.id}/`, data).then(response => {
+        const error  = document.getElementById('error')
+        error.hidden = response.success
+        if(!response.success) {
+            error.textContent = response.message
+            return
+        }
+
+        document.getElementById('uid').value          = ''
+        document.getElementById('alias').value        = ''
+        document.getElementById('parameter').value    = ''
+        document.getElementById('action').selectIndex = 0
+
+        refreshRegistry()
+    })
+}
+
+/*
+ * Initialise everything after DOM is loaded.
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+    refreshActionClasses()
+    refreshRegistry()
+
+    const readTagInterval = 1000
+    readTag()
+    setInterval(readTag, readTagInterval)
+
+    document.querySelector('form').addEventListener('submit', submitForm)
 })
-
-document.getElementById('register-form').onsubmit = () => {
-    api.register()
-    return false;
-}
-
-document.getElementById('unregister-button').onclick = () => {
-    api.unregister()
-    return false
-}
-
-document.getElementById('read-rfid-tag').onclick = () => api.getLatestTag()

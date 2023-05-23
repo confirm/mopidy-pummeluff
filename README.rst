@@ -59,20 +59,33 @@ Please have a look at the `Raspberry Pi SPI pinout <https://pinout.xyz/pinout/sp
 Connecting the buttons (optional)
 ---------------------------------
 
-You can connect two buttons to the RPi:
+To control the RPi, you can optionally connect several buttons as well.  
+Pummeluff supports the following button interactions:
 
-- ``RPi pin 5`` - Power button: Shutdown the Raspberry Pi into halt state & wake it up again from halt state
-- ``RPi pin 29`` - Playback button: Pause and resume the playback
-- ``RPi pin 31`` - Stop button: Stops the playback
-- ``RPi pin 33`` - Previous button: Changes to the previous track in the playlist
-- ``RPi pin 35`` - Next button: Changes to the next track in the playlist
+- Power button: Shutdown the Raspberry Pi into halt state & wake it up again from halt state
+- Playback button: Pause and resume the playback
+- Stop button: Stops the playback
+- Previous button: Changes to the previous track in the playlist
+- Next button: Changes to the next track in the playlist
 
-The buttons must shortcut their corresponding pins against ``GND`` (e.g. pin ``6``) when pressed. This means you want to connect one pin of the button (i.e. ``C``) to RPI's ``GND``, and the other one (i.e. ``NO``) to RPi's pin ``5``, ``29``, ``31``, ``33`` or ``35``.
+Please have a look at the `default Pummeluff config`_ for the default button GPIO pin numbers, respectively the configuration options to change the them.
+
+The buttons must shortcut their correspnding pins against ``GND`` (e.g. pin ``6``).  
+For example for the power button:
+
+- ``Button pin 1`` (e.g. ``C``)  --- ``RPi GND pin`` (e.g. pin ``6``)
+- ``Button pin 2`` (e.g. ``NO``) --- ``RPi pin 5 [GPIO 3]``
+
 
 Connecting the status LED (optional)
 ------------------------------------
 
-If you want to have a status LED which is turned on when the RPi is running, you can connect an LED to a ``GND`` pin (e.g. pin ``6``) & to pin ``8``.
+If you want to have a status LED which is turned on when the RPi / Mopidy is running, you can connect an LED to these pins:
+
+- ``LED - pin`` --- ``RPi GND pin`` (e.g. pin ``6``)
+- ``LED + pin`` --- ``RPi LED pin`` 
+
+Please have a look at the `default Pummeluff config`_ for the default LED GPIO pin number, respectively the configuration option to change it.
 
 Installation
 ============
@@ -109,11 +122,11 @@ The recommended way to install Mopidy Pummeluff by using ``pip`` and thus by exe
 
 .. code-block:: bash
 
-    sudo pip install mopidy-pummeluff
+    sudo python3 -m pip install mopidy-pummeluff
 
 .. hint::
 
-    If you get an error that ``spidev`` could not be found, run ``pip install spidev`` first. This is an issue related to the ``pi-rc522`` Pypi package.
+    If you get an error that ``spidev`` could not be found, run ``sudo python3 -m pip install spidev`` first. This is an issue related to the ``pi-rc522`` Pypi package.
 
 Install from source
 -------------------
@@ -142,6 +155,8 @@ Activate and configure the `Mopidy HTTP <https://docs.mopidy.com/en/latest/ext/h
     [http]
     enabled = true
     hostname = 0.0.0.0
+
+Have a look at the `default Pummeluff config <mopidy_pummeluff/ext.conf>`_ for all configuration options.
 
 Usage
 =====

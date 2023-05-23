@@ -7,7 +7,7 @@ __all__ = (
     'RegistryHandler',
     'RegisterHandler',
     'UnregisterHandler',
-    'ActionClassesHandler',
+    'ActionsHandler',
 )
 
 from json import dumps
@@ -15,14 +15,14 @@ from logging import getLogger
 
 from tornado.web import RequestHandler
 
-from mopidy_pummeluff.registry import REGISTRY
 from mopidy_pummeluff.actions import ACTIONS
+from mopidy_pummeluff.registry import REGISTRY
 from mopidy_pummeluff.threads import TagReader
 
 LOGGER = getLogger(__name__)
 
 
-class LatestHandler(RequestHandler):  # pylint: disable=abstract-method
+class LatestHandler(RequestHandler):  # pylint: disable=too-few-public-methods,abstract-method
     '''
     Request handler which returns the latest scanned tag.
     '''
@@ -30,6 +30,9 @@ class LatestHandler(RequestHandler):  # pylint: disable=abstract-method
     def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle GET request.
+
+        :param list \\*args: The positional arguments
+        :param dict \\**kwargs: The keyword arguments
         '''
         tag = TagReader.latest
 
@@ -53,7 +56,7 @@ class LatestHandler(RequestHandler):  # pylint: disable=abstract-method
         self.write(dumps(data))
 
 
-class RegistryHandler(RequestHandler):  # pylint: disable=abstract-method
+class RegistryHandler(RequestHandler):  # pylint: disable=too-few-public-methods,abstract-method
     '''
     Request handler which returns all registered tags.
     '''
@@ -61,6 +64,9 @@ class RegistryHandler(RequestHandler):  # pylint: disable=abstract-method
     def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle GET request.
+
+        :param list \\*args: The positional arguments
+        :param dict \\**kwargs: The keyword arguments
         '''
         tags_list = []
 
@@ -77,7 +83,7 @@ class RegistryHandler(RequestHandler):  # pylint: disable=abstract-method
         self.write(dumps(data))
 
 
-class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
+class RegisterHandler(RequestHandler):  # pylint: disable=too-few-public-methods,abstract-method
     '''
     Request handler which registers an RFID tag in the registry.
     '''
@@ -85,10 +91,13 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
     def post(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle POST request.
+
+        :param list \\*args: The positional arguments
+        :param dict \\**kwargs: The keyword arguments
         '''
         try:
             tag = REGISTRY.register(
-                action_class=self.get_argument('action-class'),
+                action=self.get_argument('action'),
                 uid=self.get_argument('uid'),
                 alias=self.get_argument('alias', None),
                 parameter=self.get_argument('parameter', None),
@@ -114,11 +123,14 @@ class RegisterHandler(RequestHandler):  # pylint: disable=abstract-method
     def put(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle PUT request.
+
+        :param list \\*args: The positional arguments
+        :param dict \\**kwargs: The keyword arguments
         '''
         self.post()
 
 
-class UnregisterHandler(RequestHandler):  # pylint: disable=abstract-method
+class UnregisterHandler(RequestHandler):  # pylint: disable=too-few-public-methods,abstract-method
     '''
     Request handler which unregisters an RFID tag from the registry.
     '''
@@ -126,6 +138,9 @@ class UnregisterHandler(RequestHandler):  # pylint: disable=abstract-method
     def post(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle POST request.
+
+        :param list \\*args: The positional arguments
+        :param dict \\**kwargs: The keyword arguments
         '''
         try:
             REGISTRY.unregister(uid=self.get_argument('uid'))
@@ -148,23 +163,29 @@ class UnregisterHandler(RequestHandler):  # pylint: disable=abstract-method
     def put(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle PUT request.
+
+        :param list \\*args: The positional arguments
+        :param dict \\**kwargs: The keyword arguments
         '''
         self.post()
 
 
-class ActionClassesHandler(RequestHandler):  # pylint: disable=abstract-method
+class ActionsHandler(RequestHandler):  # pylint: disable=too-few-public-methods,abstract-method
     '''
-    Request handler which returns all action classes.
+    Request handler which returns all actions.
     '''
 
     def get(self, *args, **kwargs):  # pylint: disable=unused-argument
         '''
         Handle GET request.
+
+        :param list \\*args: The positional arguments
+        :param dict \\**kwargs: The keyword arguments
         '''
         data = {
             'success': True,
-            'message': 'Action classes successfully retreived',
-            'action_classes': ACTIONS
+            'message': 'Actions successfully retreived',
+            'actions': ACTIONS
         }
 
         self.set_header('Content-type', 'application/json')
